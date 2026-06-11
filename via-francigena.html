@@ -99,7 +99,7 @@
   <div class="wrap">
     <div class="section-head">
       <div><span class="num">/ 03</span><h2>Genera il tuo <em>GPX</em></h2></div>
-      <p class="lead" style="font-size:1rem">Scegli partenza e arrivo — una stazione dei treni o un'accoglienza ufficiale. Calcoliamo la rotta ciclabile con BRouter (profilo <em>trekking</em>) e ti diamo la traccia da scaricare.</p>
+      <p class="lead" style="font-size:1rem">Scegli partenza e arrivo — una stazione dei treni o un'accoglienza ufficiale (indica solo la città, pensiamo noi a trovarla). Calcoliamo la rotta ciclabile con BRouter, profilo <em>bici trekking · originale</em>.</p>
     </div>
 
     <div class="gpx-wrap">
@@ -111,13 +111,9 @@
             <button class="active" data-type="station">🚉 Stazione</button>
             <button data-type="hostel">🛏 Ostello</button>
           </div>
-          <div class="field" data-input="start-station">
-            <label for="start-city">Città della stazione</label>
-            <input id="start-city" type="text" placeholder="es. Siena" autocomplete="off">
-          </div>
-          <div class="field" data-input="start-hostel" hidden>
-            <label for="start-hostel">Accoglienza ufficiale</label>
-            <select id="start-hostel"><option value="">Seleziona…</option></select>
+          <div class="field">
+            <label id="start-lbl" for="start-city">Città della stazione</label>
+            <input id="start-city" type="text" placeholder="es. Siena" autocomplete="off" list="vf-cities">
           </div>
         </div>
 
@@ -128,15 +124,13 @@
             <button class="active" data-type="station">🚉 Stazione</button>
             <button data-type="hostel">🛏 Ostello</button>
           </div>
-          <div class="field" data-input="end-station">
-            <label for="end-city">Città della stazione</label>
-            <input id="end-city" type="text" placeholder="es. Viterbo" autocomplete="off">
-          </div>
-          <div class="field" data-input="end-hostel" hidden>
-            <label for="end-hostel">Accoglienza ufficiale</label>
-            <select id="end-hostel"><option value="">Seleziona…</option></select>
+          <div class="field">
+            <label id="end-lbl" for="end-city">Città della stazione</label>
+            <input id="end-city" type="text" placeholder="es. Viterbo" autocomplete="off" list="vf-cities">
           </div>
         </div>
+
+        <datalist id="vf-cities"></datalist>
 
         <div class="gpx-actions">
           <button class="btn" id="gpx-go">Calcola la rotta <span class="arrow">→</span></button>
@@ -154,6 +148,61 @@
   </div>
 </section>
 
+<!-- 4 · MULTI-DAY ITINERARY -->
+<section class="section" id="itinerario">
+  <div class="wrap">
+    <div class="section-head">
+      <div><span class="num">/ 04</span><h2>Pianifica il tuo <em>viaggio</em></h2></div>
+      <p class="lead" style="font-size:1rem">Partenza, arrivo e quanti giorni hai. Dividiamo il percorso in tappe più o meno uguali che finiscono sempre in un'accoglienza ufficiale, con descrizione, mappa e GPX di ogni tappa in un unico zip.</p>
+    </div>
+
+    <div class="gpx-wrap">
+      <div class="gpx-panel">
+        <div class="gpx-leg start">
+          <div class="leg-title"><span class="pin">A</span> Partenza</div>
+          <div class="seg" data-leg="t-start">
+            <button class="active" data-type="station">🚉 Stazione</button>
+            <button data-type="hostel">🛏 Ostello</button>
+          </div>
+          <div class="field"><label for="t-start-city">Città di partenza</label>
+            <input id="t-start-city" type="text" placeholder="es. Lucca" autocomplete="off" list="vf-cities"></div>
+        </div>
+        <div class="gpx-leg end">
+          <div class="leg-title"><span class="pin">B</span> Arrivo</div>
+          <div class="seg" data-leg="t-end">
+            <button class="active" data-type="station">🚉 Stazione</button>
+            <button data-type="hostel">🛏 Ostello</button>
+          </div>
+          <div class="field"><label for="t-end-city">Città di arrivo</label>
+            <input id="t-end-city" type="text" placeholder="es. Roma" autocomplete="off" list="vf-cities"></div>
+        </div>
+        <div class="gpx-leg">
+          <div class="field"><label for="t-days">In quanti giorni?</label>
+            <input id="t-days" type="number" min="2" max="20" value="4"></div>
+        </div>
+        <div class="gpx-actions">
+          <button class="btn" id="t-go">Genera l'itinerario <span class="arrow">→</span></button>
+          <button class="btn ghost" id="t-zip" disabled style="opacity:.5">↓ Scarica tutto (.zip)</button>
+          <p class="gpx-status" id="t-status">Tappe equilibrate, sempre con un letto a fine giornata.</p>
+        </div>
+      </div>
+
+      <div id="t-map"></div>
+    </div>
+
+    <div id="t-stages" class="stages"></div>
+  </div>
+</section>
+
+<!-- blocking loader -->
+<div class="loader" id="loader" hidden>
+  <div class="loader-card">
+    <div class="loader-ring"></div>
+    <p class="loader-title" id="loader-title">Sto pedalando i calcoli…</p>
+    <p class="loader-sub" id="loader-sub">Un attimo solo</p>
+  </div>
+</div>
+
 <footer class="site-foot">
   <div class="wrap">
     <p class="made">made with <span class="heart">♥</span> by <b>wakephul</b></p>
@@ -162,6 +211,7 @@
 </footer>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="js/main.js"></script>
 <script src="js/francigena.js"></script>
 </body>

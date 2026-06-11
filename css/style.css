@@ -4,9 +4,9 @@
 
 :root{
   /* palette */
-  --ink:        #14110d;   /* espresso near-black */
-  --ink-2:      #1d1812;   /* raised surfaces */
-  --ink-3:      #2a2218;   /* cards */
+  --ink:        #221d16;   /* warm espresso (lightened) */
+  --ink-2:      #2c2619;   /* raised surfaces */
+  --ink-3:      #38301f;   /* cards */
   --cream:      #f4ece0;   /* primary text */
   --cream-dim:  #c9bca8;   /* secondary text */
   --coral:      #e8643c;   /* primary accent — sunset terracotta */
