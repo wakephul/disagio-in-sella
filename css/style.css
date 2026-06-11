@@ -143,6 +143,20 @@ body.menu-open .menu li a{transform:translateY(0)}
 .menu li:nth-child(3) a{transition-delay:.24s}
 .menu li:nth-child(4) a{transition-delay:.31s}
 .menu li a:hover{color:var(--coral);font-style:italic}
+
+/* close ✕ inside overlay */
+.overlay-close{
+  position:absolute;top:1.4rem;right:clamp(1.25rem,4vw,2.6rem);
+  width:54px;height:54px;border-radius:50%;
+  background:rgba(244,236,224,.1);border:1px solid var(--line);
+  display:grid;place-content:center;
+  font-size:1.4rem;line-height:1;color:var(--cream);cursor:pointer;
+  opacity:0;pointer-events:none;
+  transition:opacity .3s .25s,background .3s,transform .4s var(--ease);
+}
+body.menu-open .overlay-close{opacity:1;pointer-events:auto}
+.overlay-close:hover{background:rgba(232,100,60,.22);transform:rotate(90deg)}
+
 .menu-foot{
   margin-top:clamp(2rem,5vw,3.5rem);
   padding:0 clamp(1.5rem,8vw,7rem);

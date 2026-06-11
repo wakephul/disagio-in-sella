@@ -10,9 +10,10 @@
       burger.setAttribute('aria-expanded', open);
       body.style.overflow = open ? 'hidden' : '';
     });
-    document.querySelectorAll('.menu a').forEach(a =>
-      a.addEventListener('click', () => {
+    document.querySelectorAll('.menu a, .overlay-close').forEach(el =>
+      el.addEventListener('click', () => {
         body.classList.remove('menu-open');
+        burger.setAttribute('aria-expanded', 'false');
         body.style.overflow = '';
       })
     );
