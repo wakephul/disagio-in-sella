@@ -132,6 +132,17 @@
 
         <datalist id="vf-cities"></datalist>
 
+        <div class="gpx-leg">
+          <div class="field">
+            <label for="gpx-acc-type">Tipo accoglienza (se ostello)</label>
+            <select id="gpx-acc-type">
+              <option value="both">Entrambe (pellegrina + turistica)</option>
+              <option value="pellegrina">Solo accoglienza pellegrina</option>
+              <option value="turistica">Solo accoglienza turistica</option>
+            </select>
+          </div>
+        </div>
+
         <div class="gpx-actions">
           <button class="btn" id="gpx-go">Calcola la rotta <span class="arrow">→</span></button>
           <button class="btn ghost" id="gpx-dl" disabled style="opacity:.5">↓ Scarica GPX</button>
@@ -179,6 +190,16 @@
         <div class="gpx-leg">
           <div class="field"><label for="t-days">In quanti giorni?</label>
             <input id="t-days" type="number" min="2" max="20" value="4"></div>
+        </div>
+        <div class="gpx-leg">
+          <div class="field">
+            <label for="t-acc-type">Tipo accoglienza per le soste</label>
+            <select id="t-acc-type">
+              <option value="both">Entrambe (pellegrina + turistica)</option>
+              <option value="pellegrina">Solo accoglienza pellegrina</option>
+              <option value="turistica">Solo accoglienza turistica</option>
+            </select>
+          </div>
         </div>
         <div class="gpx-actions">
           <button class="btn" id="t-go">Genera l'itinerario <span class="arrow">→</span></button>

@@ -115,26 +115,31 @@ const VF = (function () {
     if (!hit) throw new Error(`Stazione non trovata per “${city}”.`);
     return { lat: hit.lat, lon: hit.lon, label: `Stazione di ${city}` };
   }
-  // pick official accommodation in the typed city; else nearest one with a bed
-  async function resolveHostel(places, city) {
+  // accType: 'both' | 'pellegrina' | 'turistica'
+  function filterByAccType(places, accType) {
+    if (!accType || accType === 'both') return places;
+    return places.filter(p => p.type.toLowerCase().includes(accType));
+  }
+  async function resolveHostel(places, city, accType) {
+    const pool = filterByAccType(places, accType);
     const want = norm(city);
-    let inCity = places.filter(p => norm(p.city) === want);
-    if (!inCity.length) inCity = places.filter(p => norm(p.city).includes(want) && want.length > 3);
+    let inCity = pool.filter(p => norm(p.city) === want);
+    if (!inCity.length) inCity = pool.filter(p => norm(p.city).includes(want) && want.length > 3);
     if (inCity.length) {
       const p = inCity.sort((a, b) => (a.type.includes('pellegrina') ? -1 : 1) - (b.type.includes('pellegrina') ? -1 : 1))[0];
       return { lat: p.lat, lon: p.lon, label: `${p.name}, ${p.city}`, hostel: p };
     }
-    // none in city → geocode the city, find nearest accommodation
     const c = await geocode(`${city}, Italia`);
     if (!c) throw new Error(`Città “${city}” non trovata e nessuna accoglienza con quel nome.`);
     let best = null, bd = Infinity;
-    places.forEach(p => { const d = haversine(c.lat, c.lon, p.lat, p.lon); if (d < bd) { bd = d; best = p; } });
+    pool.forEach(p => { const d = haversine(c.lat, c.lon, p.lat, p.lon); if (d < bd) { bd = d; best = p; } });
+    if (!best) throw new Error(`Nessuna accoglienza disponibile per il tipo selezionato.`);
     return { lat: best.lat, lon: best.lon, label: `${best.name}, ${best.city}`, hostel: best,
       note: `Nessuna accoglienza a ${city}: scelta la più vicina, ${best.city} (${bd.toFixed(0)} km).` };
   }
-  async function resolve(places, type, city, role) {
+  async function resolve(places, type, city, role, accType) {
     if (!city) throw new Error(`Inserisci la città di ${role}.`);
-    return type === 'station' ? await geocodeStation(city) : await resolveHostel(places, city);
+    return type === 'station' ? await geocodeStation(city) : await resolveHostel(places, city, accType);
   }
 
   async function brouter(a, b) {
@@ -165,7 +170,7 @@ const VF = (function () {
     }
     return { along, dist: bd };
   }
-  return { norm, slug, haversine, geocode, geocodeStation, resolve, brouter, parseGpx, cumulative, project };
+  return { norm, slug, haversine, geocode, geocodeStation, resolve, filterByAccType, brouter, parseGpx, cumulative, project };
 })();
 
 /* ---------- blocking loader ---------- */
@@ -226,9 +231,10 @@ accReady.then(places => {
   goBtn.addEventListener('click', async () => {
     try {
       goBtn.disabled = true;
+      const accType = document.getElementById('gpx-acc-type').value;
       setStatus('<span class="spinner"></span> Cerco gli indirizzi…');
-      const a = await VF.resolve(places, segState.start, document.getElementById('start-city').value.trim(), 'partenza');
-      const b = await VF.resolve(places, segState.end, document.getElementById('end-city').value.trim(), 'arrivo');
+      const a = await VF.resolve(places, segState.start, document.getElementById('start-city').value.trim(), 'partenza', accType);
+      const b = await VF.resolve(places, segState.end, document.getElementById('end-city').value.trim(), 'arrivo', accType);
       setStatus('<span class="spinner"></span> Calcolo la rotta ciclabile (BRouter)…');
       const { xml, coords } = await VF.brouter(a, b);
       draw(coords, a, b);
@@ -260,10 +266,10 @@ accReady.then(places => {
 
   let zipStages = null, zipName = '';
 
-  // choose N-1 intermediate hostels near equal splits, snapped to the route
-  function pickStops(route, cum, total, n) {
-    const buffer = 14; // km from route
-    const cand = places.map(p => {
+  function pickStops(route, cum, total, n, accType) {
+    const pool = VF.filterByAccType(places, accType);
+    const buffer = 14;
+    const cand = pool.map(p => {
       const pr = VF.project(route, cum, p.lat, p.lon);
       return { p, along: pr.along, dist: pr.dist };
     }).filter(c => c.dist <= buffer).sort((a, b) => a.along - b.along);
@@ -307,9 +313,10 @@ accReady.then(places => {
     try {
       goBtn.disabled = true; zipBtn.disabled = true; zipBtn.style.opacity = .5;
       const n = Math.max(2, Math.min(20, +document.getElementById('t-days').value || 4));
+      const accType = document.getElementById('t-acc-type').value;
       Loader.show('Sto disegnando il viaggio…', 'Cerco partenza e arrivo');
-      const a = await VF.resolve(places, segState['t-start'], document.getElementById('t-start-city').value.trim(), 'partenza');
-      const b = await VF.resolve(places, segState['t-end'], document.getElementById('t-end-city').value.trim(), 'arrivo');
+      const a = await VF.resolve(places, segState['t-start'], document.getElementById('t-start-city').value.trim(), 'partenza', accType);
+      const b = await VF.resolve(places, segState['t-end'], document.getElementById('t-end-city').value.trim(), 'arrivo', accType);
 
       Loader.step('Calcolo il percorso completo…');
       const full = await VF.brouter(a, b);
@@ -318,7 +325,7 @@ accReady.then(places => {
       if (total / n < 8) throw new Error('Troppi giorni per un percorso così corto. Riduci le tappe.');
 
       Loader.step('Scelgo le soste con un letto…');
-      const stops = pickStops(full.coords, cum, total, n);
+      const stops = pickStops(full.coords, cum, total, n, accType);
 
       // build waypoint chain A → stops → B and route each leg
       const chain = [{ lat: a.lat, lon: a.lon, label: a.label, hostel: a.hostel },

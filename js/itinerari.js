@@ -59,7 +59,7 @@
     document.querySelectorAll('.reveal').forEach(el => el.classList.add('in'));
 
     grid.querySelectorAll('.toggle-map').forEach(btn =>
-      btn.addEventListener('click', () => openMap(btn.dataset.id, btn)));
+      btn.addEventListener('click', () => openMap(btn.dataset.id, btn).catch(() => {})));
     grid.querySelectorAll('.dl-gpx').forEach(btn =>
       btn.addEventListener('click', () => {
         const d = data.find(x => x.id === btn.dataset.id);
@@ -68,21 +68,36 @@
       }));
   }
 
-  function openMap(id, btn) {
+  async function fetchRoute(d) {
+    const s = d.coords[0], e = d.coords[d.coords.length - 1];
+    try {
+      const url = `https://brouter.de/brouter?lonlats=${s[1]},${s[0]}|${e[1]},${e[0]}&profile=trekking&alternativeidx=0&format=gpx`;
+      const xml = await (await fetch(url)).text();
+      const pts = [...xml.matchAll(/<trkpt\b[^>]*lat="([\d.\-]+)"[^>]*lon="([\d.\-]+)"|<trkpt\b[^>]*lon="([\d.\-]+)"[^>]*lat="([\d.\-]+)"/g)]
+        .map(m => m[1] ? [+m[1], +m[2]] : [+m[4], +m[3]]);
+      return pts.length > 1 ? pts : d.coords;
+    } catch { return d.coords; }
+  }
+
+  async function openMap(id, btn) {
     const wrap = document.getElementById('map-' + id);
     const d = data.find(x => x.id === id);
     const isOpen = wrap.classList.toggle('open');
     btn.textContent = isOpen ? 'Nascondi mappa' : 'Mostra mappa';
     if (!isOpen) return;
     if (!maps[id]) {
+      btn.disabled = true; btn.textContent = '⏳ Carico…';
+      const coords = await fetchRoute(d);
       const map = DIS.makeMap(wrap, {});
-      const line = L.polyline(d.coords, { color: '#e8643c', weight: 4, opacity: .95 }).addTo(map);
-      L.circleMarker(d.coords[0], { radius: 7, color: '#fff', fillColor: '#93a06a', fillOpacity: 1, weight: 2 })
+      const line = L.polyline(coords, { color: '#e8643c', weight: 4, opacity: .95 }).addTo(map);
+      L.polyline(coords, { color: '#e8643c', weight: 12, opacity: .12 }).addTo(map);
+      L.circleMarker(coords[0], { radius: 7, color: '#fff', fillColor: '#93a06a', fillOpacity: 1, weight: 2 })
         .addTo(map).bindPopup(`<b>Partenza</b><br>${d.start}`);
-      L.circleMarker(d.coords[d.coords.length - 1], { radius: 7, color: '#fff', fillColor: '#e8643c', fillOpacity: 1, weight: 2 })
+      L.circleMarker(coords[coords.length - 1], { radius: 7, color: '#fff', fillColor: '#e8643c', fillOpacity: 1, weight: 2 })
         .addTo(map).bindPopup(`<b>Arrivo</b><br>${d.end}`);
-      map.fitBounds(line.getBounds().pad(0.15));
+      map.fitBounds(line.getBounds().pad(0.08));
       maps[id] = map;
+      btn.disabled = false; btn.textContent = 'Nascondi mappa';
     }
     setTimeout(() => maps[id].invalidateSize(), 580);
   }
