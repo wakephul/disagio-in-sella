@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Via Francigena in bici — Disagio in Sella</title>
+<meta name="description" content="La Via Francigena in bicicletta: mappa dell'intero cammino, accoglienze ufficiali filtrabili e generatore di tracce GPX da stazione o ostello." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="css/style.css" />
+<link rel="stylesheet" href="css/pages.css" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%23e8643c'/%3E%3C/svg%3E">
+</head>
+<body>
+
+<header class="topbar">
+  <a class="brand" href="index.html"><span class="dot"></span> Disagio in Sella</a>
+  <button class="burger" aria-label="Apri il menu" aria-expanded="false"><span></span><span></span><span></span></button>
+</header>
+<nav class="overlay" aria-label="Menu principale">
+  <ul class="menu">
+    <li><a href="index.html"><span class="idx">01</span> Home</a></li>
+    <li><a href="itinerari.html"><span class="idx">02</span> Itinerari</a></li>
+    <li><a href="via-francigena.html"><span class="idx">03</span> Via Francigena</a></li>
+    <li><a href="via-francigena.html#genera"><span class="idx">04</span> Genera il tuo GPX</a></li>
+  </ul>
+  <div class="menu-foot"><span>Pedala il bello, sopporta il resto.</span><span>🇮🇹 Made in Italy</span></div>
+</nav>
+
+<!-- HERO -->
+<section class="vf-hero hero">
+  <div class="hero-bg">
+    <img src="https://images.unsplash.com/photo-1602940659805-770d1b3b9911?auto=format&fit=crop&w=2000&q=80" alt="Strada bianca fra i cipressi toscani" onerror="this.style.display='none'">
+  </div>
+  <div class="wrap">
+    <p class="eyebrow" style="opacity:0;animation:fadeup 1s .3s forwards">Da Canterbury a Roma · in bici</p>
+    <h1>Via <em>Francigena</em></h1>
+    <p class="lead">Milleottocento chilometri di pellegrinaggio, oggi pedalabili. Qui trovi il cammino intero su mappa, tutte le accoglienze ufficiali da filtrare e un generatore di tracce GPX da stazione a ostello.</p>
+    <div class="hero-cta" style="margin-top:1.6rem">
+      <a class="btn" href="#genera">Genera la tua traccia <span class="arrow">→</span></a>
+      <a class="btn ghost" href="#accoglienze">Cerca un'accoglienza</a>
+    </div>
+  </div>
+</section>
+
+<!-- 1 · FULL MAP -->
+<section class="section" id="mappa">
+  <div class="wrap">
+    <div class="section-head">
+      <div><span class="num">/ 01</span><h2>Il cammino <em>intero</em></h2></div>
+      <p class="lead" style="font-size:1rem">Il tracciato ufficiale dal Colle del Gran San Bernardo fino a Roma, con le tappe principali. Clicca i punti per i nomi.</p>
+    </div>
+    <div id="vf-fullmap"></div>
+    <div class="map-legend">
+      <span><i style="background:#e8643c"></i> Tracciato Via Francigena</span>
+      <span><i style="background:#93a06a;border-radius:50%;width:12px;height:12px"></i> Tappe principali</span>
+      <span style="color:var(--cream-dim)">Tracciato rappresentativo · fonte: viefrancigene.org</span>
+    </div>
+  </div>
+</section>
+
+<!-- 2 · ACCOMMODATIONS -->
+<section class="section" id="accoglienze">
+  <div class="wrap">
+    <div class="section-head">
+      <div><span class="num">/ 02</span><h2>Dove <em>dormire</em></h2></div>
+      <p class="lead" style="font-size:1rem">Le accoglienze ufficiali del cammino. Filtra per città, regione o stato, oppure cerca a testo libero.</p>
+    </div>
+
+    <div class="acc-controls">
+      <div class="field">
+        <label for="acc-search">Cerca</label>
+        <input id="acc-search" type="search" placeholder="Nome, città, indirizzo…" autocomplete="off">
+      </div>
+      <div class="field">
+        <label for="acc-state">Stato</label>
+        <select id="acc-state"><option value="">Tutti</option></select>
+      </div>
+      <div class="field">
+        <label for="acc-region">Regione</label>
+        <select id="acc-region"><option value="">Tutte</option></select>
+      </div>
+      <div class="field">
+        <label for="acc-city">Città</label>
+        <select id="acc-city"><option value="">Tutte</option></select>
+      </div>
+    </div>
+
+    <p class="acc-count" id="acc-count"></p>
+    <div class="acc-grid" id="acc-grid"></div>
+  </div>
+</section>
+
+<!-- 3 · GPX GENERATOR -->
+<section class="section" id="genera">
+  <div class="wrap">
+    <div class="section-head">
+      <div><span class="num">/ 03</span><h2>Genera il tuo <em>GPX</em></h2></div>
+      <p class="lead" style="font-size:1rem">Scegli partenza e arrivo — una stazione dei treni o un'accoglienza ufficiale. Calcoliamo la rotta ciclabile con BRouter (profilo <em>trekking</em>) e ti diamo la traccia da scaricare.</p>
+    </div>
+
+    <div class="gpx-wrap">
+      <div class="gpx-panel">
+        <!-- START -->
+        <div class="gpx-leg start">
+          <div class="leg-title"><span class="pin">A</span> Partenza</div>
+          <div class="seg" data-leg="start">
+            <button class="active" data-type="station">🚉 Stazione</button>
+            <button data-type="hostel">🛏 Ostello</button>
+          </div>
+          <div class="field" data-input="start-station">
+            <label for="start-city">Città della stazione</label>
+            <input id="start-city" type="text" placeholder="es. Siena" autocomplete="off">
+          </div>
+          <div class="field" data-input="start-hostel" hidden>
+            <label for="start-hostel">Accoglienza ufficiale</label>
+            <select id="start-hostel"><option value="">Seleziona…</option></select>
+          </div>
+        </div>
+
+        <!-- END -->
+        <div class="gpx-leg end">
+          <div class="leg-title"><span class="pin">B</span> Arrivo</div>
+          <div class="seg" data-leg="end">
+            <button class="active" data-type="station">🚉 Stazione</button>
+            <button data-type="hostel">🛏 Ostello</button>
+          </div>
+          <div class="field" data-input="end-station">
+            <label for="end-city">Città della stazione</label>
+            <input id="end-city" type="text" placeholder="es. Viterbo" autocomplete="off">
+          </div>
+          <div class="field" data-input="end-hostel" hidden>
+            <label for="end-hostel">Accoglienza ufficiale</label>
+            <select id="end-hostel"><option value="">Seleziona…</option></select>
+          </div>
+        </div>
+
+        <div class="gpx-actions">
+          <button class="btn" id="gpx-go">Calcola la rotta <span class="arrow">→</span></button>
+          <button class="btn ghost" id="gpx-dl" disabled style="opacity:.5">↓ Scarica GPX</button>
+          <p class="gpx-status" id="gpx-status">Profilo: bici trekking · originale.</p>
+          <div class="gpx-route-info" id="gpx-info" hidden>
+            <div><span class="n" id="gpx-dist">—</span><span class="k">km rotta</span></div>
+            <div><span class="n" id="gpx-pts">—</span><span class="k">punti traccia</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="gpx-map"></div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <p class="made">made with <span class="heart">♥</span> by <b>wakephul</b></p>
+    <small>© <span id="year"></span> Disagio in Sella — routing © brouter.de · geocoding © Nominatim/OSM</small>
+  </div>
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="js/main.js"></script>
+<script src="js/francigena.js"></script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Itinerari — Disagio in Sella</title>
+<meta name="description" content="Sei itinerari ciclabili d'Italia con descrizione, mappa interattiva e traccia GPX scaricabile." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="css/style.css" />
+<link rel="stylesheet" href="css/pages.css" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%23e8643c'/%3E%3C/svg%3E">
+</head>
+<body>
+
+<header class="topbar">
+  <a class="brand" href="index.html"><span class="dot"></span> Disagio in Sella</a>
+  <button class="burger" aria-label="Apri il menu" aria-expanded="false"><span></span><span></span><span></span></button>
+</header>
+<nav class="overlay" aria-label="Menu principale">
+  <ul class="menu">
+    <li><a href="index.html"><span class="idx">01</span> Home</a></li>
+    <li><a href="itinerari.html"><span class="idx">02</span> Itinerari</a></li>
+    <li><a href="via-francigena.html"><span class="idx">03</span> Via Francigena</a></li>
+    <li><a href="via-francigena.html#genera"><span class="idx">04</span> Genera il tuo GPX</a></li>
+  </ul>
+  <div class="menu-foot"><span>Pedala il bello, sopporta il resto.</span><span>🇮🇹 Made in Italy</span></div>
+</nav>
+
+<header class="page-head">
+  <div class="wrap">
+    <p class="eyebrow">Raccolta · 06 percorsi</p>
+    <h1>Strade che valgono <em>il fiatone</em></h1>
+    <p class="lead">Itinerari scelti uno per uno fra le ciclabili e le strade bianche d'Italia. Per ognuno: una descrizione onesta, la mappa interattiva e la traccia GPX pronta da scaricare.</p>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="filters" id="filters"></div>
+  <div class="itineraries" id="grid"></div>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <p class="made">made with <span class="heart">♥</span> by <b>wakephul</b></p>
+    <small>© <span id="year"></span> Disagio in Sella — dati cartografici © OpenStreetMap</small>
+  </div>
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="js/main.js"></script>
+<script src="js/itinerari.js"></script>
+</body>
+</html>
