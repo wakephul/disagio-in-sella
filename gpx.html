@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Genera il tuo GPX — Disagio in Sella</title>
-<meta name="description" content="Genera una traccia GPX ciclabile tra due punti qualsiasi d'Italia. Singola tappa o itinerario multi-giorno con soste in accoglienze ufficiali." />
+<meta name="description" content="Genera una traccia GPX ciclabile tra due indirizzi qualsiasi. Singola tappa o itinerario multi-giorno con soste in campeggi, ostelli o hotel trovati lungo il percorso." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -32,9 +32,9 @@
 
 <header class="page-head">
   <div class="wrap">
-    <p class="eyebrow">BRouter · trekking · originale</p>
+    <p class="eyebrow">BRouter · trekking · Overpass/OSM</p>
     <h1>Genera il tuo <em>GPX</em></h1>
-    <p class="lead">Da qualsiasi punto d'Italia a qualsiasi altro. Singola tappa o itinerario multi-giorno con soste nelle accoglienze ufficiali della Via Francigena.</p>
+    <p class="lead">Inserisci partenza e arrivo — qualsiasi indirizzo. Per itinerari multi-giorno cerchiamo lungo il percorso campeggi, ostelli o hotel reali su OpenStreetMap e costruiamo le tappe.</p>
   </div>
 </header>
 
@@ -44,99 +44,82 @@
     <!-- FORM PANEL -->
     <div class="gpx-panel">
 
-      <!-- PARTENZA -->
       <div class="gpx-leg start">
-        <div class="leg-title"><span class="pin">A</span> Partenza</div>
-        <div class="seg" data-leg="start">
-          <button class="active" data-type="station">🚉 Stazione</button>
-          <button data-type="hostel">🛏 Ostello</button>
-        </div>
+        <div class="leg-title"><span class="pin" style="background:var(--olive)">A</span> Partenza</div>
         <div class="field">
-          <label id="start-lbl" for="start-city">Città della stazione</label>
-          <input id="start-city" type="text" placeholder="es. Lucca" autocomplete="off" list="gpx-cities">
+          <label for="addr-start">Indirizzo di partenza</label>
+          <input id="addr-start" type="text" placeholder="es. Piazza del Campo, Siena" autocomplete="off">
         </div>
       </div>
 
-      <!-- ARRIVO -->
       <div class="gpx-leg end">
-        <div class="leg-title"><span class="pin">B</span> Arrivo</div>
-        <div class="seg" data-leg="end">
-          <button class="active" data-type="station">🚉 Stazione</button>
-          <button data-type="hostel">🛏 Ostello</button>
-        </div>
+        <div class="leg-title"><span class="pin" style="background:var(--coral)">B</span> Arrivo</div>
         <div class="field">
-          <label id="end-lbl" for="end-city">Città della stazione</label>
-          <input id="end-city" type="text" placeholder="es. Siena" autocomplete="off" list="gpx-cities">
+          <label for="addr-end">Indirizzo di arrivo</label>
+          <input id="addr-end" type="text" placeholder="es. Piazza del Duomo, Orvieto" autocomplete="off">
         </div>
       </div>
 
-      <datalist id="gpx-cities"></datalist>
-
-      <!-- TIPO -->
       <div class="gpx-leg">
         <div class="field">
           <label for="gpx-mode">Tipo di percorso</label>
           <select id="gpx-mode">
-            <option value="single">Tappa singola — un GPX diretto</option>
-            <option value="multi">Itinerario multi-giorno — tappe + zip</option>
+            <option value="single">Tappa singola</option>
+            <option value="multi">Itinerario multi-giorno</option>
           </select>
         </div>
       </div>
 
-      <!-- GIORNI (solo multi) -->
-      <div class="gpx-leg" id="days-row" hidden>
-        <div class="field">
-          <label for="gpx-days">In quanti giorni?</label>
-          <input id="gpx-days" type="number" min="2" max="20" value="4">
+      <div id="multi-opts" hidden>
+        <div class="gpx-leg">
+          <div class="field">
+            <label for="gpx-days">In quanti giorni?</label>
+            <input id="gpx-days" type="number" min="2" max="20" value="3">
+          </div>
+        </div>
+        <div class="gpx-leg">
+          <div class="field">
+            <label for="gpx-acc-type">Tipo di alloggio per le soste</label>
+            <select id="gpx-acc-type">
+              <option value="camping">🏕 Campeggio</option>
+              <option value="hostel" selected>🛏 Ostello</option>
+              <option value="hotel">🏨 Hotel / B&amp;B</option>
+              <option value="any">Qualsiasi (campeggio + ostello + hotel)</option>
+            </select>
+          </div>
         </div>
       </div>
 
-      <!-- TIPO ACCOGLIENZA (solo multi) -->
-      <div class="gpx-leg" id="acc-row" hidden>
-        <div class="field">
-          <label for="gpx-acc-type">Tipo accoglienza per le soste</label>
-          <select id="gpx-acc-type">
-            <option value="both">Entrambe (pellegrina + turistica)</option>
-            <option value="pellegrina">Solo pellegrina</option>
-            <option value="turistica">Solo turistica</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- AZIONI -->
       <div class="gpx-actions">
         <button class="btn" id="gpx-go">Genera <span class="arrow">→</span></button>
-        <button class="btn ghost" id="gpx-dl" disabled style="opacity:.5">↓ Scarica GPX</button>
-        <button class="btn ghost" id="gpx-zip" disabled style="opacity:.5">↓ Scarica zip</button>
+        <button class="btn ghost" id="gpx-dl"  disabled style="opacity:.5">↓ GPX</button>
+        <button class="btn ghost" id="gpx-zip" disabled style="opacity:.5">↓ Zip tappe</button>
         <p class="gpx-status" id="gpx-status">Profilo: bici trekking · originale.</p>
         <div class="gpx-route-info" id="gpx-info" hidden>
-          <div><span class="n" id="gpx-dist">—</span><span class="k">km rotta</span></div>
+          <div><span class="n" id="gpx-dist">—</span><span class="k">km totali</span></div>
           <div><span class="n" id="gpx-pts">—</span><span class="k">punti traccia</span></div>
         </div>
       </div>
     </div>
 
-    <!-- MAPPA -->
     <div id="gpx-map"></div>
   </div>
 
-  <!-- TAPPE (multi-day) -->
   <div id="gpx-stages" class="stages"></div>
 </main>
 
-<!-- LOADER -->
 <div class="loader" id="loader" hidden>
   <div class="loader-card">
     <div class="loader-ring"></div>
     <p class="loader-title" id="loader-title">Calcolo in corso…</p>
-    <p class="loader-sub" id="loader-sub">Un attimo</p>
+    <p class="loader-sub"  id="loader-sub">Un attimo</p>
   </div>
 </div>
 
 <footer class="site-foot">
   <div class="wrap">
     <p class="made">made with <span class="heart">♥</span> by <b>wakephul</b></p>
-    <small>© <span id="year"></span> Disagio in Sella — routing © brouter.de · geocoding © Nominatim/OSM</small>
+    <small>© <span id="year"></span> Disagio in Sella — routing © brouter.de · poi © OpenStreetMap/Overpass · geocoding © Nominatim</small>
   </div>
 </footer>
 

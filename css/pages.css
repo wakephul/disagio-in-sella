@@ -66,36 +66,101 @@
 .marquee span b{color:var(--coral);font-style:normal}
 @keyframes scroll{to{transform:translateX(-50%)}}
 
-/* ---------- ITINERARY CARDS ---------- */
-.filters{display:flex;gap:.6rem;flex-wrap:wrap;padding-bottom:2.5rem;align-items:center}
-.chip{padding:.5rem 1.05rem;border-radius:999px;border:1px solid var(--line);font-size:.82rem;font-weight:600;
-  color:var(--cream-dim);transition:all .3s var(--ease)}
+/* ---------- FILTER BAR ---------- */
+.filters{padding-bottom:2.8rem}
+.filter-bar{background:var(--ink-2);border:1px solid var(--line);border-radius:var(--radius-lg);padding:1.4rem 1.6rem;display:flex;flex-direction:column;gap:1rem}
+.filter-row{display:flex;align-items:center;gap:.9rem;flex-wrap:wrap}
+.filter-row-bottom{gap:1.4rem}
+.filter-label{font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--cream-dim);font-weight:600;white-space:nowrap}
+.filter-sep{width:1px;height:18px;background:var(--line);flex-shrink:0}
+.chips{display:flex;gap:.45rem;flex-wrap:wrap}
+.chip{padding:.45rem 1rem;border-radius:999px;border:1px solid var(--line);font-size:.8rem;font-weight:600;
+  color:var(--cream-dim);transition:all .3s var(--ease);cursor:pointer;background:transparent}
 .chip:hover{border-color:var(--coral);color:var(--cream)}
 .chip.active{background:var(--cream);color:var(--ink);border-color:var(--cream)}
+.filter-km-wrap{display:flex;flex-direction:column;gap:.45rem;flex:1;min-width:200px}
+.filter-km-inner{display:flex;align-items:center;gap:.9rem}
+.filter-km-inner input[type=range]{flex:1;accent-color:var(--coral);cursor:pointer;height:3px}
+.filter-km-val{font-size:.82rem;color:var(--cream-dim);white-space:nowrap;min-width:130px}
+.filter-camping{display:flex;align-items:center;gap:.55rem;font-size:.85rem;font-weight:600;color:var(--cream-dim);cursor:pointer}
+.filter-camping input{accent-color:var(--coral);width:15px;height:15px;cursor:pointer}
+.filter-count{margin-left:auto;font-size:.82rem;color:var(--cream-dim);white-space:nowrap;font-weight:600}
 
-.itineraries{display:grid;grid-template-columns:repeat(12,1fr);gap:1.6rem 1.4rem}
-.itin{grid-column:span 6;background:var(--ink-3);border:1px solid var(--line-soft);border-radius:var(--radius-lg);
-  overflow:hidden;display:flex;flex-direction:column;transition:transform .5s var(--ease),border-color .4s}
-.itin:hover{transform:translateY(-5px);border-color:rgba(232,100,60,.35)}
-.itin:nth-child(3n+1){grid-column:span 7}
-.itin:nth-child(3n+2){grid-column:span 5}
-.itin-media{position:relative;aspect-ratio:16/10;overflow:hidden;background:linear-gradient(135deg,var(--ink-3),var(--ink))}
-.itin-media img{width:100%;height:100%;object-fit:cover;transition:transform .9s var(--ease)}
-.itin:hover .itin-media img{transform:scale(1.07)}
-.itin-media .tags{position:absolute;top:1rem;left:1rem;display:flex;gap:.45rem;flex-wrap:wrap}
-.itin-body{padding:1.5rem 1.6rem 1.7rem;display:flex;flex-direction:column;flex:1}
-.itin-body h3{font-size:1.7rem;margin-bottom:.5rem}
-.itin-region{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--olive);font-weight:600;margin-bottom:.7rem}
-.itin-body p{color:var(--cream-dim);font-size:.96rem;flex:1}
-.itin-stats{display:flex;gap:1.4rem;margin:1.2rem 0;flex-wrap:wrap}
-.itin-stats div{display:flex;flex-direction:column}
-.itin-stats .n{font-family:var(--font-display);font-size:1.45rem;color:var(--cream);line-height:1}
-.itin-stats .k{font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--cream-dim);margin-top:.25rem}
-.itin-actions{display:flex;gap:.7rem;flex-wrap:wrap;margin-top:auto}
-.itin-map{height:0;overflow:hidden;border-radius:14px;transition:height .55s var(--ease);margin-top:0}
-.itin-map.open{height:280px;margin-top:1.1rem}
-.itin-map .leaflet-container{height:100%;border-radius:14px;background:var(--ink-2)}
+/* ---------- ITINERARY CARDS ---------- */
+.itineraries{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem;padding-bottom:5rem}
+.itin-card{position:relative;display:block;border-radius:var(--radius-lg);overflow:hidden;
+  aspect-ratio:2/3;text-decoration:none;cursor:pointer;
+  background:linear-gradient(135deg,var(--ink-3),var(--ink));
+  transition:transform .5s var(--ease),box-shadow .5s var(--ease)}
+.itin-card:hover{transform:translateY(-8px);box-shadow:0 28px 60px rgba(0,0,0,.55)}
+.itin-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  transition:transform .9s var(--ease)}
+.itin-card:hover img{transform:scale(1.07)}
+.itin-card-overlay{position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(20,17,13,.97) 0%,rgba(20,17,13,.45) 55%,rgba(20,17,13,.05) 100%);
+  transition:background .4s}
+.itin-card:hover .itin-card-overlay{background:linear-gradient(to top,rgba(20,17,13,.99) 0%,rgba(20,17,13,.55) 60%,rgba(20,17,13,.1) 100%)}
+.itin-card-tags{position:absolute;top:1.1rem;left:1.1rem;display:flex;gap:.4rem;flex-wrap:wrap;z-index:1}
+.itin-card-content{position:relative;z-index:1;padding:1.6rem;display:flex;flex-direction:column;
+  position:absolute;bottom:0;left:0;right:0;padding:1.8rem}
+.itin-card-region{font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--olive);
+  font-weight:700;margin-bottom:.4rem}
+.itin-card-title{font-family:var(--font-display);font-size:clamp(1.15rem,2vw,1.55rem);line-height:1.1;
+  color:var(--cream);margin-bottom:.8rem;font-weight:500}
+.itin-card-stats{display:flex;gap:1rem;flex-wrap:wrap;font-size:.78rem;color:rgba(244,236,224,.65);margin-bottom:.9rem}
+.itin-card-stats b{font-family:var(--font-display);font-size:.95rem;color:var(--cream)}
+.itin-card-cta{display:inline-flex;align-items:center;gap:.4rem;font-size:.85rem;font-weight:700;
+  color:var(--coral);transform:translateY(4px);opacity:.75;
+  transition:transform .35s var(--ease),opacity .35s}
+.itin-card:hover .itin-card-cta{transform:translateY(0);opacity:1}
+.itin-card-cta .arrow{transition:transform .35s var(--ease)}
+.itin-card:hover .itin-card-cta .arrow{transform:translateX(5px)}
 .btn.sm{padding:.62rem 1.1rem;font-size:.84rem}
+
+/* ---------- ITINERARIO DETAIL PAGE ---------- */
+.detail-hero{position:relative;min-height:80svh;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden}
+.detail-hero-bg{position:absolute;inset:0;z-index:0}
+.detail-hero-bg img{width:100%;height:100%;object-fit:cover;animation:slowzoom 22s ease-in-out infinite alternate}
+.detail-hero-overlay{position:absolute;inset:0;z-index:1;
+  background:linear-gradient(180deg,rgba(20,17,13,.55) 0%,rgba(20,17,13,.15) 40%,rgba(20,17,13,.96) 100%)}
+.detail-hero-content{position:relative;z-index:2;padding-bottom:3.5rem}
+.detail-back{display:inline-flex;align-items:center;gap:.4rem;font-size:.82rem;font-weight:600;
+  color:var(--cream-dim);letter-spacing:.05em;text-decoration:none;margin-bottom:1.8rem;
+  transition:color .3s}
+.detail-back:hover{color:var(--coral)}
+.detail-hero-content .eyebrow{margin-bottom:.5rem;color:var(--olive)}
+.detail-hero-content h1{font-size:clamp(2.4rem,7vw,5.5rem);margin:.4rem 0 1.2rem;line-height:.95}
+.detail-badges{display:flex;gap:.5rem;flex-wrap:wrap}
+.detail-statsbar{background:var(--ink-2);border-bottom:1px solid var(--line-soft)}
+.detail-statsbar-inner{display:flex;gap:0;overflow-x:auto}
+.detail-stat{flex:1;min-width:100px;padding:1.4rem 1.6rem;border-right:1px solid var(--line-soft);
+  display:flex;flex-direction:column;gap:.3rem}
+.detail-stat:last-child{border-right:none}
+.detail-stat .n{font-family:var(--font-display);font-size:1.6rem;color:var(--cream);line-height:1}
+.detail-stat .k{font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;color:var(--cream-dim)}
+.detail-body{padding:4rem 0 6rem}
+.detail-cols{display:grid;grid-template-columns:1fr 1.2fr;gap:3.5rem;align-items:start}
+.detail-section-title{font-size:1.1rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
+  color:var(--cream-dim);margin-bottom:1rem;font-family:var(--font-body)}
+.detail-desc{font-size:1.1rem;line-height:1.7;color:var(--cream-dim);margin-bottom:2.5rem}
+.highlights-list{list-style:none;display:flex;flex-direction:column;gap:.5rem;margin-bottom:2.5rem}
+.highlights-list li{display:flex;align-items:center;gap:.7rem;font-size:1rem;color:var(--cream-dim)}
+.highlights-list li::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--coral);flex-shrink:0}
+.detail-route{margin-top:2.5rem;padding-top:2rem;border-top:1px solid var(--line-soft)}
+.detail-route-pts{display:flex;align-items:center;gap:0}
+.detail-pt{padding:.7rem 1.1rem;border-radius:10px;font-weight:700;font-size:.9rem;background:var(--ink-2);border:1px solid var(--line)}
+.detail-pt.start::before{content:"A  ";color:var(--olive);font-family:var(--font-display)}
+.detail-pt.end::before{content:"B  ";color:var(--coral);font-family:var(--font-display)}
+.detail-route-line{flex:1;height:2px;background:linear-gradient(90deg,var(--olive),var(--coral));margin:0 .6rem}
+.detail-map-wrap{position:relative;border-radius:var(--radius-lg);overflow:hidden;
+  border:1px solid var(--line);aspect-ratio:4/3;background:var(--ink-2)}
+#detail-map{width:100%;height:100%}
+#detail-map .leaflet-container{width:100%;height:100%;background:var(--ink-2)}
+.detail-map-status{position:absolute;inset:0;display:grid;place-content:center;
+  font-family:var(--font-display);font-size:1.1rem;color:var(--cream-dim);
+  background:var(--ink-2);z-index:2}
+.detail-gpx-row{display:flex;align-items:center;gap:1rem;margin-top:1.2rem;flex-wrap:wrap}
+.detail-stat-surface .n{font-size:1rem;padding-top:.3rem}
 
 /* ---------- VIA FRANCIGENA ---------- */
 .vf-hero{position:relative;min-height:78svh;display:flex;align-items:flex-end;padding-bottom:3rem;overflow:hidden}
@@ -204,15 +269,26 @@
 .leaflet-popup-content b{font-family:var(--font-display)}
 
 /* ---------- responsive ---------- */
+@media(max-width:1100px){
+  .itineraries{grid-template-columns:repeat(2,1fr)}
+  .detail-cols{grid-template-columns:1fr}
+  .detail-statsbar-inner{flex-wrap:wrap}
+  .detail-stat{min-width:calc(50% - 1px);border-right:1px solid var(--line-soft)}
+  .detail-stat:nth-child(even){border-right:none}
+}
 @media(max-width:900px){
   .routes-grid{grid-template-columns:1fr}
-  .itin,.itin:nth-child(3n+1),.itin:nth-child(3n+2){grid-column:span 12}
   .acc-controls{grid-template-columns:1fr 1fr}
   .gpx-wrap{grid-template-columns:1fr}
   #gpx-map{min-height:420px}
+  .filter-row{gap:.6rem}
+  .filter-sep{display:none}
 }
-@media(max-width:560px){
+@media(max-width:600px){
+  .itineraries{grid-template-columns:1fr}
+  .itin-card{aspect-ratio:3/4}
   .acc-controls{grid-template-columns:1fr}
   .hero-meta{display:none}
-  .itin-stats{gap:1rem}
+  .detail-hero{min-height:70svh}
+  .detail-stat{min-width:calc(50% - 1px)}
 }

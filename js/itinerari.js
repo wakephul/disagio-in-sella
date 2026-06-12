@@ -11,95 +11,131 @@
     return;
   }
 
-  const macros = ['Tutti', ...new Set(data.map(d => d.macro))];
-  let active = 'Tutti';
+  const maxKmData = Math.max(...data.map(d => d.distance));
 
-  filtersEl.innerHTML = macros.map(m =>
-    `<button class="chip${m === 'Tutti' ? ' active' : ''}" data-m="${m}">${m}</button>`
-  ).join('');
-  filtersEl.addEventListener('click', e => {
+  // filter state
+  const f = { macro: 'Tutti', diff: 'Tutte', days: 'Tutti', maxKm: maxKmData, camping: false };
+
+  // build filter UI
+  const macros = ['Tutti', ...new Set(data.map(d => d.macro))];
+  const diffs  = ['Tutte', 'Facile', 'Media', 'Difficile'];
+  const dayBands = [
+    { label: 'Tutti', test: () => true },
+    { label: '1 giorno', test: d => d.days === 1 },
+    { label: '2–5 giorni', test: d => d.days >= 2 && d.days <= 5 },
+    { label: '6+ giorni', test: d => d.days >= 6 },
+  ];
+
+  filtersEl.innerHTML = `
+    <div class="filter-bar">
+      <div class="filter-row">
+        <span class="filter-label">Zona</span>
+        <div class="chips" id="f-macro">${macros.map(m =>
+          `<button class="chip${m === 'Tutti' ? ' active' : ''}" data-v="${m}">${m}</button>`
+        ).join('')}</div>
+      </div>
+      <div class="filter-row">
+        <span class="filter-label">Difficoltà</span>
+        <div class="chips" id="f-diff">${diffs.map(d =>
+          `<button class="chip${d === 'Tutte' ? ' active' : ''}" data-v="${d}">${d}</button>`
+        ).join('')}</div>
+        <span class="filter-sep"></span>
+        <span class="filter-label">Durata</span>
+        <div class="chips" id="f-days">${dayBands.map((b, i) =>
+          `<button class="chip${i === 0 ? ' active' : ''}" data-i="${i}">${b.label}</button>`
+        ).join('')}</div>
+      </div>
+      <div class="filter-row filter-row-bottom">
+        <div class="filter-km-wrap">
+          <span class="filter-label">Distanza massima</span>
+          <div class="filter-km-inner">
+            <input type="range" id="f-km" min="0" max="${maxKmData}" value="${maxKmData}" step="10">
+            <span class="filter-km-val" id="f-km-val">fino a ${maxKmData} km</span>
+          </div>
+        </div>
+        <label class="filter-camping">
+          <input type="checkbox" id="f-camping">
+          <span>🏕 Solo con campeggio</span>
+        </label>
+        <span class="filter-count" id="f-count">${data.length} itinerari</span>
+      </div>
+    </div>
+  `;
+
+  // chip handlers
+  document.getElementById('f-macro').addEventListener('click', e => {
     const b = e.target.closest('.chip'); if (!b) return;
-    active = b.dataset.m;
-    filtersEl.querySelectorAll('.chip').forEach(c => c.classList.toggle('active', c === b));
+    document.querySelectorAll('#f-macro .chip').forEach(c => c.classList.toggle('active', c === b));
+    f.macro = b.dataset.v; render();
+  });
+  document.getElementById('f-diff').addEventListener('click', e => {
+    const b = e.target.closest('.chip'); if (!b) return;
+    document.querySelectorAll('#f-diff .chip').forEach(c => c.classList.toggle('active', c === b));
+    f.diff = b.dataset.v; render();
+  });
+  document.getElementById('f-days').addEventListener('click', e => {
+    const b = e.target.closest('.chip'); if (!b) return;
+    document.querySelectorAll('#f-days .chip').forEach(c => c.classList.toggle('active', c === b));
+    f.daysIdx = +b.dataset.i; render();
+  });
+  f.daysIdx = 0;
+
+  // slider
+  const kmSlider = document.getElementById('f-km');
+  const kmVal = document.getElementById('f-km-val');
+  kmSlider.addEventListener('input', () => {
+    f.maxKm = +kmSlider.value;
+    kmVal.textContent = f.maxKm >= maxKmData ? `qualsiasi distanza` : `fino a ${f.maxKm} km`;
     render();
   });
 
-  const diffClass = d => d === 'Facile' ? 'olive' : d === 'Difficile' ? 'coral' : 'gold';
-  const maps = {};
+  // camping
+  document.getElementById('f-camping').addEventListener('change', e => {
+    f.camping = e.target.checked; render();
+  });
+
+  const diffColor = d => d === 'Facile' ? 'olive' : d === 'Difficile' ? 'coral' : 'gold';
 
   function render() {
-    const list = data.filter(d => active === 'Tutti' || d.macro === active);
-    grid.innerHTML = list.map(d => `
-      <article class="itin reveal" id="itin-${d.id}">
-        <div class="itin-media">
-          <img src="${d.image}" alt="${d.title}" loading="lazy" onerror="this.style.display='none'">
-          <div class="tags">
-            <span class="tag ${diffClass(d.difficulty)}">${d.difficulty}</span>
-            <span class="tag">${d.days} giorni</span>
-          </div>
-        </div>
-        <div class="itin-body">
-          <p class="itin-region">${d.region}</p>
-          <h3>${d.title}</h3>
-          <p>${d.description}</p>
-          <div class="itin-stats">
-            <div><span class="n">${d.distance}</span><span class="k">km</span></div>
-            <div><span class="n">${d.ascent}</span><span class="k">m D+</span></div>
-            <div><span class="n">${d.start.split(' ')[0]}</span><span class="k">partenza</span></div>
-            <div><span class="n">${d.end.split(' ')[0]}</span><span class="k">arrivo</span></div>
-          </div>
-          <div class="itin-actions">
-            <button class="btn sm toggle-map" data-id="${d.id}">Mostra mappa</button>
-            <button class="btn ghost sm dl-gpx" data-id="${d.id}">↓ GPX</button>
-          </div>
-          <div class="itin-map" id="map-${d.id}"></div>
-        </div>
-      </article>`).join('');
+    const list = data.filter(d =>
+      (f.macro === 'Tutti' || d.macro === f.macro) &&
+      (f.diff  === 'Tutte' || d.difficulty === f.diff) &&
+      dayBands[f.daysIdx].test(d) &&
+      d.distance <= f.maxKm &&
+      (!f.camping || d.camping)
+    );
 
-    document.querySelectorAll('.reveal').forEach(el => el.classList.add('in'));
+    document.getElementById('f-count').textContent =
+      list.length === 0 ? 'Nessun itinerario trovato'
+      : `${list.length} itinerar${list.length === 1 ? 'io' : 'i'}`;
 
-    grid.querySelectorAll('.toggle-map').forEach(btn =>
-      btn.addEventListener('click', () => openMap(btn.dataset.id, btn).catch(() => {})));
-    grid.querySelectorAll('.dl-gpx').forEach(btn =>
-      btn.addEventListener('click', () => {
-        const d = data.find(x => x.id === btn.dataset.id);
-        const gpx = DIS.buildGpx(d.coords, d.title);
-        DIS.downloadText(`${d.id}.gpx`, gpx);
-      }));
-  }
-
-  async function fetchRoute(d) {
-    const s = d.coords[0], e = d.coords[d.coords.length - 1];
-    try {
-      const url = `https://brouter.de/brouter?lonlats=${s[1]},${s[0]}|${e[1]},${e[0]}&profile=trekking&alternativeidx=0&format=gpx`;
-      const xml = await (await fetch(url)).text();
-      const pts = [...xml.matchAll(/<trkpt\b[^>]*lat="([\d.\-]+)"[^>]*lon="([\d.\-]+)"|<trkpt\b[^>]*lon="([\d.\-]+)"[^>]*lat="([\d.\-]+)"/g)]
-        .map(m => m[1] ? [+m[1], +m[2]] : [+m[4], +m[3]]);
-      return pts.length > 1 ? pts : d.coords;
-    } catch { return d.coords; }
-  }
-
-  async function openMap(id, btn) {
-    const wrap = document.getElementById('map-' + id);
-    const d = data.find(x => x.id === id);
-    const isOpen = wrap.classList.toggle('open');
-    btn.textContent = isOpen ? 'Nascondi mappa' : 'Mostra mappa';
-    if (!isOpen) return;
-    if (!maps[id]) {
-      btn.disabled = true; btn.textContent = '⏳ Carico…';
-      const coords = await fetchRoute(d);
-      const map = DIS.makeMap(wrap, {});
-      const line = L.polyline(coords, { color: '#e8643c', weight: 4, opacity: .95 }).addTo(map);
-      L.polyline(coords, { color: '#e8643c', weight: 12, opacity: .12 }).addTo(map);
-      L.circleMarker(coords[0], { radius: 7, color: '#fff', fillColor: '#93a06a', fillOpacity: 1, weight: 2 })
-        .addTo(map).bindPopup(`<b>Partenza</b><br>${d.start}`);
-      L.circleMarker(coords[coords.length - 1], { radius: 7, color: '#fff', fillColor: '#e8643c', fillOpacity: 1, weight: 2 })
-        .addTo(map).bindPopup(`<b>Arrivo</b><br>${d.end}`);
-      map.fitBounds(line.getBounds().pad(0.08));
-      maps[id] = map;
-      btn.disabled = false; btn.textContent = 'Nascondi mappa';
+    if (list.length === 0) {
+      grid.innerHTML = '<p class="acc-empty">Nessun itinerario corrisponde ai filtri.</p>';
+      return;
     }
-    setTimeout(() => maps[id].invalidateSize(), 580);
+
+    grid.innerHTML = list.map(d => `
+      <a class="itin-card reveal" href="itinerario.html?id=${d.id}" aria-label="${d.title}">
+        <img src="${d.image}" alt="${d.title}" loading="lazy" onerror="this.style.display='none'">
+        <div class="itin-card-overlay"></div>
+        <div class="itin-card-tags">
+          <span class="tag ${diffColor(d.difficulty)}">${d.difficulty}</span>
+          ${d.camping ? '<span class="tag olive">🏕</span>' : ''}
+        </div>
+        <div class="itin-card-content">
+          <p class="itin-card-region">${d.region}</p>
+          <h3 class="itin-card-title">${d.title}</h3>
+          <div class="itin-card-stats">
+            <span><b>${d.distance}</b> km</span>
+            <span><b>${d.days}</b> ${d.days === 1 ? 'giorno' : 'giorni'}</span>
+            <span><b>${d.ascent.toLocaleString('it')}</b> m D+</span>
+          </div>
+          <span class="itin-card-cta">Scopri <span class="arrow">→</span></span>
+        </div>
+      </a>`).join('');
+
+    document.querySelectorAll('.reveal').forEach(el =>
+      requestAnimationFrame(() => el.classList.add('in')));
   }
 
   render();
