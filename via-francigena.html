@@ -17,30 +17,29 @@
 
 <header class="topbar">
   <a class="brand" href="index.html"><span class="dot"></span> Disagio in Sella</a>
-  <button class="burger" aria-label="Apri il menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  <div class="topbar-actions"><button class="theme-toggle" aria-label="Cambia tema chiaro/scuro"></button><button class="burger" aria-label="Apri il menu" aria-expanded="false"><span></span><span></span><span></span></button></div>
 </header>
 <nav class="overlay" aria-label="Menu principale">
   <button class="overlay-close" aria-label="Chiudi menu">&#x2715;</button>
   <ul class="menu">
     <li><a href="index.html"><span class="idx">01</span> Home</a></li>
     <li><a href="itinerari.html"><span class="idx">02</span> Itinerari</a></li>
-    <li><a href="via-francigena.html"><span class="idx">03</span> Via Francigena</a></li>
-    <li><a href="gpx.html"><span class="idx">04</span> Genera il tuo GPX</a></li>
-  </ul>
-  <div class="menu-foot"><span>Pedala il bello, sopporta il resto.</span><span>🇮🇹 Made in Italy</span></div>
+    <li><a href="gpx.html"><span class="idx">03</span> Genera il tuo GPX</a></li>
+</ul>
+
 </nav>
 
 <!-- HERO -->
 <section class="vf-hero hero">
   <div class="hero-bg">
-    <img src="https://images.unsplash.com/photo-1602940659805-770d1b3b9911?auto=format&fit=crop&w=2000&q=80" alt="Strada bianca fra i cipressi toscani" onerror="this.style.display='none'">
+    <img src="https://images.unsplash.com/photo-1605448098495-5d4dfae4ab40?auto=format&fit=crop&w=2000&q=80" alt="Strada sterrata toscana" onerror="this.style.display='none'">
   </div>
   <div class="wrap">
-    <p class="eyebrow" style="opacity:0;animation:fadeup 1s .3s forwards">Da Canterbury a Roma · in bici</p>
+    <p class="eyebrow" style="opacity:0;animation:fadeup 1s .3s forwards">Canterbury → Roma · in bici</p>
     <h1>Via <em>Francigena</em></h1>
-    <p class="lead">Milleottocento chilometri di pellegrinaggio, oggi pedalabili. Qui trovi il cammino intero su mappa, tutte le accoglienze ufficiali da filtrare e un generatore di tracce GPX da stazione a ostello.</p>
+    <p class="lead">Millenovecento chilometri di storia, salite e accoglienze. Mappa interattiva del tracciato e motore di ricerca per trovare posti dove dormire lungo la via.</p>
     <div class="hero-cta" style="margin-top:1.6rem">
-      <a class="btn" href="#genera">Genera la tua traccia <span class="arrow">→</span></a>
+      <a class="btn" href="#mappa">Il cammino su mappa <span class="arrow">→</span></a>
       <a class="btn ghost" href="#accoglienze">Cerca un'accoglienza</a>
     </div>
   </div>
@@ -51,7 +50,7 @@
   <div class="wrap">
     <div class="section-head">
       <div><span class="num">/ 01</span><h2>Il cammino <em>intero</em></h2></div>
-      <p class="lead" style="font-size:1rem">Il tracciato ufficiale dal Colle del Gran San Bernardo fino a Roma, con le tappe principali. Clicca i punti per i nomi.</p>
+      <p class="lead" style="font-size:1rem">Dal Gran San Bernardo a Roma, passo dopo passo. Clicca i punti per i nomi delle tappe.</p>
     </div>
     <div id="vf-fullmap"></div>
     <div class="map-legend">
@@ -94,145 +93,14 @@
   </div>
 </section>
 
-<!-- 3 · GPX GENERATOR -->
-<section class="section" id="genera">
-  <div class="wrap">
-    <div class="section-head">
-      <div><span class="num">/ 03</span><h2>Genera il tuo <em>GPX</em></h2></div>
-      <p class="lead" style="font-size:1rem">Scegli partenza e arrivo — una stazione dei treni o un'accoglienza ufficiale (indica solo la città, pensiamo noi a trovarla). Calcoliamo la rotta ciclabile con BRouter, profilo <em>bici trekking · originale</em>.</p>
-    </div>
-
-    <div class="gpx-wrap">
-      <div class="gpx-panel">
-        <!-- START -->
-        <div class="gpx-leg start">
-          <div class="leg-title"><span class="pin">A</span> Partenza</div>
-          <div class="seg" data-leg="start">
-            <button class="active" data-type="station">🚉 Stazione</button>
-            <button data-type="hostel">🛏 Ostello</button>
-          </div>
-          <div class="field">
-            <label id="start-lbl" for="start-city">Città della stazione</label>
-            <input id="start-city" type="text" placeholder="es. Siena" autocomplete="off" list="vf-cities">
-          </div>
-        </div>
-
-        <!-- END -->
-        <div class="gpx-leg end">
-          <div class="leg-title"><span class="pin">B</span> Arrivo</div>
-          <div class="seg" data-leg="end">
-            <button class="active" data-type="station">🚉 Stazione</button>
-            <button data-type="hostel">🛏 Ostello</button>
-          </div>
-          <div class="field">
-            <label id="end-lbl" for="end-city">Città della stazione</label>
-            <input id="end-city" type="text" placeholder="es. Viterbo" autocomplete="off" list="vf-cities">
-          </div>
-        </div>
-
-        <datalist id="vf-cities"></datalist>
-
-        <div class="gpx-leg">
-          <div class="field">
-            <label for="gpx-acc-type">Tipo accoglienza (se ostello)</label>
-            <select id="gpx-acc-type">
-              <option value="both">Entrambe (pellegrina + turistica)</option>
-              <option value="pellegrina">Solo accoglienza pellegrina</option>
-              <option value="turistica">Solo accoglienza turistica</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="gpx-actions">
-          <button class="btn" id="gpx-go">Calcola la rotta <span class="arrow">→</span></button>
-          <button class="btn ghost" id="gpx-dl" disabled style="opacity:.5">↓ Scarica GPX</button>
-          <p class="gpx-status" id="gpx-status">Profilo: bici trekking · originale.</p>
-          <div class="gpx-route-info" id="gpx-info" hidden>
-            <div><span class="n" id="gpx-dist">—</span><span class="k">km rotta</span></div>
-            <div><span class="n" id="gpx-pts">—</span><span class="k">punti traccia</span></div>
-          </div>
-        </div>
-      </div>
-
-      <div id="gpx-map"></div>
-    </div>
-  </div>
-</section>
-
-<!-- 4 · MULTI-DAY ITINERARY -->
-<section class="section" id="itinerario">
-  <div class="wrap">
-    <div class="section-head">
-      <div><span class="num">/ 04</span><h2>Pianifica il tuo <em>viaggio</em></h2></div>
-      <p class="lead" style="font-size:1rem">Partenza, arrivo e quanti giorni hai. Dividiamo il percorso in tappe più o meno uguali che finiscono sempre in un'accoglienza ufficiale, con descrizione, mappa e GPX di ogni tappa in un unico zip.</p>
-    </div>
-
-    <div class="gpx-wrap">
-      <div class="gpx-panel">
-        <div class="gpx-leg start">
-          <div class="leg-title"><span class="pin">A</span> Partenza</div>
-          <div class="seg" data-leg="t-start">
-            <button class="active" data-type="station">🚉 Stazione</button>
-            <button data-type="hostel">🛏 Ostello</button>
-          </div>
-          <div class="field"><label for="t-start-city">Città di partenza</label>
-            <input id="t-start-city" type="text" placeholder="es. Lucca" autocomplete="off" list="vf-cities"></div>
-        </div>
-        <div class="gpx-leg end">
-          <div class="leg-title"><span class="pin">B</span> Arrivo</div>
-          <div class="seg" data-leg="t-end">
-            <button class="active" data-type="station">🚉 Stazione</button>
-            <button data-type="hostel">🛏 Ostello</button>
-          </div>
-          <div class="field"><label for="t-end-city">Città di arrivo</label>
-            <input id="t-end-city" type="text" placeholder="es. Roma" autocomplete="off" list="vf-cities"></div>
-        </div>
-        <div class="gpx-leg">
-          <div class="field"><label for="t-days">In quanti giorni?</label>
-            <input id="t-days" type="number" min="2" max="20" value="4"></div>
-        </div>
-        <div class="gpx-leg">
-          <div class="field">
-            <label for="t-acc-type">Tipo accoglienza per le soste</label>
-            <select id="t-acc-type">
-              <option value="both">Entrambe (pellegrina + turistica)</option>
-              <option value="pellegrina">Solo accoglienza pellegrina</option>
-              <option value="turistica">Solo accoglienza turistica</option>
-            </select>
-          </div>
-        </div>
-        <div class="gpx-actions">
-          <button class="btn" id="t-go">Genera l'itinerario <span class="arrow">→</span></button>
-          <button class="btn ghost" id="t-zip" disabled style="opacity:.5">↓ Scarica tutto (.zip)</button>
-          <p class="gpx-status" id="t-status">Tappe equilibrate, sempre con un letto a fine giornata.</p>
-        </div>
-      </div>
-
-      <div id="t-map"></div>
-    </div>
-
-    <div id="t-stages" class="stages"></div>
-  </div>
-</section>
-
-<!-- blocking loader -->
-<div class="loader" id="loader" hidden>
-  <div class="loader-card">
-    <div class="loader-ring"></div>
-    <p class="loader-title" id="loader-title">Sto pedalando i calcoli…</p>
-    <p class="loader-sub" id="loader-sub">Un attimo solo</p>
-  </div>
-</div>
-
 <footer class="site-foot">
   <div class="wrap">
-    <p class="made">made with <span class="heart">♥</span> by <b>wakephul</b></p>
-    <small>© <span id="year"></span> Disagio in Sella — routing © brouter.de · geocoding © Nominatim/OSM</small>
+    <p class="made">fatto con <span class="heart">♥</span> da <b>wakephul</b></p>
+    <small>© <span id="year"></span> Disagio in Sella — routing © brouter.de · dati © OpenStreetMap</small>
   </div>
 </footer>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="js/main.js"></script>
 <script src="js/francigena.js"></script>
 </body>

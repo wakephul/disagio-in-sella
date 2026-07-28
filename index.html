@@ -4,9 +4,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Disagio in Sella — generatore di itinerari in bici</title>
+  <title>Disagio in Sella — itinerari in bici</title>
   <meta name="description"
-    content="Disagio in Sella: itinerari ciclabili d'Italia, la Via Francigena in bici e un generatore di tracce GPX. Pedala il bello, sopporta il resto." />
+    content="Pedala il bello, sopporta il resto. Itinerari in bici testati personalmente: la Via Francigena da Canterbury a Roma e la traversata gravel dell'Istria da Trieste a Fiume." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -23,9 +23,12 @@
   <!-- ============ NAV ============ -->
   <header class="topbar">
     <a class="brand" href="index.html"><span class="dot"></span> Disagio in Sella</a>
-    <button class="burger" aria-label="Apri il menu" aria-expanded="false">
-      <span></span><span></span><span></span>
-    </button>
+    <div class="topbar-actions">
+      <button class="theme-toggle" aria-label="Cambia tema chiaro/scuro"></button>
+      <button class="burger" aria-label="Apri il menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
   </header>
 
   <nav class="overlay" aria-label="Menu principale">
@@ -33,13 +36,9 @@
     <ul class="menu">
       <li><a href="index.html"><span class="idx">01</span> Home</a></li>
       <li><a href="itinerari.html"><span class="idx">02</span> Itinerari</a></li>
-      <li><a href="via-francigena.html"><span class="idx">03</span> Via Francigena</a></li>
-      <li><a href="gpx.html"><span class="idx">04</span> Genera il tuo GPX</a></li>
+      <li><a href="gpx.html"><span class="idx">03</span> Genera il tuo GPX</a></li>
     </ul>
-    <div class="menu-foot">
-      <span>Pedala il bello, sopporta il resto.</span>
-      <span>🇮🇹 Made in Italy</span>
-    </div>
+
   </nav>
 
   <!-- ============ HERO ============ -->
@@ -49,19 +48,17 @@
         alt="Strada bianca di campagna al tramonto" onerror="this.style.display='none'">
     </div>
     <div class="wrap">
-      <p class="eyebrow" style="opacity:0;animation:fadeup 1s .35s forwards">Generatore di itinerari in bici</p>
+      <p class="eyebrow" style="opacity:0;animation:fadeup 1s .35s forwards">Itinerari in bici</p>
       <h1>
         <span class="l1"><span>Disagio</span></span>
         <span class="l2"><span>in sella.</span></span>
       </h1>
-      <p class="lead">Le strade più belle d'Italia, la Via Francigena pedalata da nord a sud e le tue tracce GPX,
-        generate in un clic. Il bello te lo godi. Il resto, lo sopporti.</p>
+      <p class="lead">Pedali, a volte soffri, arrivi. Poi ricominci. Itinerari testati sui nostri viaggi, niente teoria.</p>
       <div class="hero-cta">
         <a class="btn" href="itinerari.html">Esplora gli itinerari <span class="arrow">→</span></a>
-        <a class="btn ghost" href="via-francigena.html">Via Francigena</a>
       </div>
     </div>
-    <div class="hero-meta">45°N · 12°E — Italia in bici</div>
+    <div class="hero-meta">andiamo piano ma andiamo</div>
     <div class="scroll-hint"><span class="bar"></span>Scorri</div>
   </section>
 
@@ -69,9 +66,7 @@
   <section class="intro">
     <div class="wrap">
       <p class="reveal">Non promettiamo che sarà <em>comodo.</em> Promettiamo che ne varrà la pena.</p>
-      <p class="small reveal">Tre strumenti, una bici. Una raccolta curata di itinerari italiani, una sezione
-        interamente dedicata alla Via Francigena in bicicletta e un generatore di tracce che parte dalle stazioni e
-        dagli ostelli ufficiali del cammino. Carica le borse, il disagio è incluso.</p>
+
     </div>
   </section>
 
@@ -79,21 +74,20 @@
   <section class="wrap">
     <div class="routes-grid">
       <a class="nav-card reveal" href="itinerari.html">
-        <img src="https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=1200&q=80" alt=""
+        <img src="https://images.unsplash.com/photo-1612332187021-595a87bd1e5d?auto=format&fit=crop&w=1200&q=80" alt=""
           onerror="this.style.display='none'">
         <span class="num">/ 02</span>
-        <h3>Gli Itinerari</h3>
-        <p>Sei percorsi d'Italia: descrizione, mappa, foto e traccia GPX da scaricare. Dal Garda alla Calabria.</p>
-        <span class="go">Apri la raccolta <span class="arrow">→</span></span>
+        <h3>Itinerari</h3>
+        <p>Via Francigena e traversata gravel dell'Istria. Itinerari testati personalmente con mappe, tracce GPX e posti dove dormire.</p>
+        <span class="go">Esplora gli itinerari <span class="arrow">→</span></span>
       </a>
-      <a class="nav-card reveal" href="via-francigena.html">
-        <img src="https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?auto=format&fit=crop&w=1200&q=80" alt=""
+      <a class="nav-card reveal" href="gpx.html">
+        <img src="https://images.unsplash.com/photo-1471506480208-91b3a4cc78be?auto=format&fit=crop&w=1200&q=80" alt=""
           onerror="this.style.display='none'">
         <span class="num">/ 03</span>
-        <h3>Via Francigena</h3>
-        <p>L'intero cammino su mappa, tutte le accoglienze ufficiali filtrabili e il generatore di GPX punto-a-punto.
-        </p>
-        <span class="go">Entra nel cammino <span class="arrow">→</span></span>
+        <h3>Genera il tuo GPX</h3>
+        <p>Crea percorsi multi-giorno con tappe, campeggi e hotel reali da OpenStreetMap. Piano la tua avventura su misura.</p>
+        <span class="go">Crea il tuo percorso <span class="arrow">→</span></span>
       </a>
     </div>
   </section>
@@ -103,18 +97,18 @@
     <div>
       <span>Sella dura</span><span>·</span><span><b>Panorami morbidi</b></span><span>·</span><span>Salite
         vere</span><span>·</span><span><b>Discese meritate</b></span><span>·</span><span>Strade
-        bianche</span><span>·</span><span><b>Borghi lenti</b></span><span>·</span>
+        bianche</span><span>·</span><span><b>Borghi lenti</b></span><span>·</span><span>Gravel</span><span>·</span><span><b>Niente asfalto</b></span><span>·</span>
       <span>Sella dura</span><span>·</span><span><b>Panorami morbidi</b></span><span>·</span><span>Salite
         vere</span><span>·</span><span><b>Discese meritate</b></span><span>·</span><span>Strade
-        bianche</span><span>·</span><span><b>Borghi lenti</b></span><span>·</span>
+        bianche</span><span>·</span><span><b>Borghi lenti</b></span><span>·</span><span>Gravel</span><span>·</span><span><b>Niente asfalto</b></span><span>·</span>
     </div>
   </div>
 
   <!-- ============ FOOTER ============ -->
   <footer class="site-foot">
     <div class="wrap">
-      <p class="made">made with <span class="heart">♥</span> by <b>wakephul</b></p>
-      <small>© <span id="year"></span> Disagio in Sella — dati cartografici © OpenStreetMap</small>
+      <p class="made">fatto con <span class="heart">♥</span> da <b>wakephul</b></p>
+      <small>© <span id="year"></span> Disagio in Sella — dati © OpenStreetMap</small>
     </div>
   </footer>
 

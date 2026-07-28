@@ -36,6 +36,25 @@
   document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 })();
 
+/* ============ theme toggle ============ */
+(function(){
+  const toggle = document.querySelector('.theme-toggle');
+  const html = document.documentElement;
+  const saved = localStorage.getItem('dis-theme');
+  if (saved) html.dataset.theme = saved;
+  const icons = { dark: '☀️', light: '🌙' };
+  if (toggle) {
+    const cur = html.dataset.theme || 'dark';
+    toggle.textContent = icons[cur] || icons.dark;
+    toggle.addEventListener('click', () => {
+      const next = (html.dataset.theme || 'dark') === 'dark' ? 'light' : 'dark';
+      html.dataset.theme = next;
+      localStorage.setItem('dis-theme', next);
+      toggle.textContent = icons[next];
+    });
+  }
+})();
+
 /* ============ shared GPX + map helpers (window.DIS) ============ */
 window.DIS = (function () {
   const TILES = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';

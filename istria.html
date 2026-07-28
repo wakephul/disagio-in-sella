@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="it" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trieste → Rijeka in bici — traversata gravel dell'Istria</title>
+    
+    <!-- Disagio in Sella styles -->
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/pages.css" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%23e8643c'/%3E%3C/svg%3E">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#fef2ef',
+                            100: '#fde2d8',
+                            500: '#e8643c',
+                            600: '#d44d24',
+                            700: '#b83d18',
+                            800: '#9a3010',
+                            900: '#7a2608',
+                        },
+                        coastal: {
+                            light: '#f0f4e8',
+                            blue: '#93a06a',
+                            dark: '#6d7a4a',
+                        },
+                        terra: {
+                            light: '#fef8e7',
+                            rust: '#e6b035',
+                            deep: '#c49020',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Archivo', 'system-ui', 'sans-serif'],
+                        serif: ['Fraunces', 'Georgia', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Leaflet.js Map CSS & JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <style>
+        body {
+            font-family: var(--font-body);
+            background-color: var(--ink);
+            color: var(--cream);
+        }
+        .font-serif-title {
+            font-family: var(--font-display);
+        }
+        .glass-card {
+            background: color-mix(in srgb, var(--ink-2) 92%, transparent);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--line);
+        }
+        .gradient-hero {
+            background: linear-gradient(135deg, rgba(232,100,60,.08) 0%, rgba(147,160,106,.06) 50%, rgba(230,176,53,.05) 100%);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: var(--ink-3);
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: var(--cream-dim);
+            border-radius: 4px;
+        }
+        .leaflet-popup-content-wrapper {
+            border-radius: 14px;
+            padding: 6px;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.12);
+        }
+        .guida-page .topbar .brand { color: var(--cream); }
+        .guida-page .gradient-hero h1 { color: var(--cream); }
+        .guida-page .gradient-hero p { color: var(--cream-dim); }
+        .guida-page .stat-card {
+            background: color-mix(in srgb, var(--ink-2) 80%, transparent);
+            border: 1px solid var(--line);
+        }
+        .guida-page .stat-card .stat-label { color: var(--cream-dim); }
+        .guida-page .stat-card .stat-value { color: var(--cream); }
+        .guida-page .gradient-hero .progress-card {
+            background: var(--ink-2);
+            border: 1px solid var(--line);
+        }
+    </style>
+
+    <!-- Dark mode overrides for the guida page -->
+    <style>
+      html[data-theme="dark"] .guida-page .glass-card {
+        background: color-mix(in srgb, var(--ink-2) 92%, transparent);
+        border-color: var(--line);
+      }
+      html[data-theme="dark"] .guida-page .gradient-hero {
+        background: linear-gradient(135deg, rgba(232,100,60,.12) 0%, rgba(147,160,106,.08) 50%, rgba(230,176,53,.06) 100%);
+      }
+      html[data-theme="dark"] .guida-page .bg-white,
+      html[data-theme="dark"] .guida-page .bg-white\/80,
+      html[data-theme="dark"] .guida-page .bg-white\/90 {
+        background-color: var(--ink-2) !important;
+      }
+      html[data-theme="dark"] .guida-page .text-slate-900 { color: var(--cream) !important; }
+      html[data-theme="dark"] .guida-page .text-slate-800 { color: var(--cream) !important; }
+      html[data-theme="dark"] .guida-page .text-slate-700 { color: var(--cream-dim) !important; }
+      html[data-theme="dark"] .guida-page .text-slate-600 { color: var(--cream-dim) !important; }
+      html[data-theme="dark"] .guida-page .text-slate-500 { color: var(--cream-dim) !important; }
+      html[data-theme="dark"] .guida-page .text-slate-400 { color: color-mix(in srgb, var(--cream-dim) 70%, transparent) !important; }
+      html[data-theme="dark"] .guida-page .border-slate-200,
+      html[data-theme="dark"] .guida-page .border-slate-200\/80 {
+        border-color: var(--line) !important;
+      }
+      html[data-theme="dark"] .guida-page .bg-slate-50,
+      html[data-theme="dark"] .guida-page .bg-slate-50\/50,
+      html[data-theme="dark"] .guida-page .bg-slate-100,
+      html[data-theme="dark"] .guida-page .bg-slate-100\/80 {
+        background-color: var(--ink-3) !important;
+      }
+      html[data-theme="dark"] .guida-page .bg-brand-50,
+      html[data-theme="dark"] .guida-page .bg-brand-50\/50 {
+        background-color: rgba(232,100,60,.12) !important;
+        border-color: rgba(232,100,60,.25) !important;
+      }
+      html[data-theme="dark"] .guida-page .bg-brand-100 {
+        background-color: rgba(232,100,60,.2) !important;
+        color: var(--coral) !important;
+      }
+      html[data-theme="dark"] .guida-page .text-brand-700,
+      html[data-theme="dark"] .guida-page .text-brand-800,
+      html[data-theme="dark"] .guida-page .text-brand-900 {
+        color: var(--coral) !important;
+      }
+      html[data-theme="dark"] .guida-page .text-brand-600 { color: var(--coral) !important; }
+      html[data-theme="dark"] .guida-page .text-brand-500 { color: var(--coral) !important; }
+      html[data-theme="dark"] .guida-page .bg-amber-50,
+      html[data-theme="dark"] .guida-page .bg-amber-50\/60 {
+        background-color: rgba(230,176,53,.12) !important;
+        border-color: rgba(230,176,53,.25) !important;
+      }
+      html[data-theme="dark"] .guida-page .text-amber-700,
+      html[data-theme="dark"] .guida-page .text-amber-800,
+      html[data-theme="dark"] .guida-page .text-amber-900 { color: var(--gold) !important; }
+      html[data-theme="dark"] .guida-page .text-amber-600 { color: var(--gold) !important; }
+      html[data-theme="dark"] .guida-page .bg-indigo-50,
+      html[data-theme="dark"] .guida-page .bg-indigo-50\/50 {
+        background-color: rgba(147,160,106,.12) !important;
+        border-color: rgba(147,160,106,.25) !important;
+      }
+      html[data-theme="dark"] .guida-page .text-indigo-600,
+      html[data-theme="dark"] .guida-page .text-indigo-700 { color: var(--olive) !important; }
+      html[data-theme="dark"] .guida-page .bg-emerald-50,
+      html[data-theme="dark"] .guida-page .bg-emerald-100 { background-color: rgba(147,160,106,.12) !important; }
+      html[data-theme="dark"] .guida-page .text-emerald-500,
+      html[data-theme="dark"] .guida-page .text-emerald-600,
+      html[data-theme="dark"] .guida-page .text-emerald-800 { color: var(--olive) !important; }
+      html[data-theme="dark"] .guida-page .border-emerald-200,
+      html[data-theme="dark"] .guida-page .border-emerald-300 { border-color: rgba(147,160,106,.25) !important; }
+      html[data-theme="dark"] .guida-page .ring-brand-300 { --tw-ring-color: rgba(232,100,60,.4) !important; }
+      html[data-theme="dark"] .guida-page .bg-slate-900,
+      html[data-theme="dark"] .guida-page .bg-slate-800 {
+        background-color: var(--ink) !important;
+      }
+      html[data-theme="dark"] .guida-page .hover\:bg-slate-200:hover { background-color: var(--ink-3) !important; }
+      html[data-theme="dark"] .guida-page .hover\:bg-slate-800:hover { background-color: var(--ink-2) !important; }
+      html[data-theme="dark"] .guida-page .hover\:bg-brand-700:hover { background-color: #b83d18 !important; }
+      html[data-theme="dark"] .guida-page .hover\:bg-brand-100:hover { background-color: rgba(232,100,60,.2) !important; }
+      html[data-theme="dark"] .guida-page .site-foot .made b { color: var(--coral); }
+      html[data-theme="dark"] .guida-page .site-foot .heart { color: var(--coral); }
+      html[data-theme="dark"] .guida-page .custom-scrollbar::-webkit-scrollbar-track { background: var(--ink-3); }
+      html[data-theme="dark"] .guida-page .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--cream-dim); }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-brand-500 selection:text-white guida-page">
+
+    <!-- ============ SITE TOPBAR ============ -->
+    <header class="topbar" style="position:relative;z-index:1001">
+      <a class="brand" href="index.html"><span class="dot"></span> Disagio in Sella</a>
+      <div class="topbar-actions">
+        <button class="theme-toggle" aria-label="Cambia tema chiaro/scuro"></button>
+        <button class="burger" aria-label="Apri il menu" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </header>
+
+    <nav class="overlay" aria-label="Menu principale">
+      <button class="overlay-close" aria-label="Chiudi menu">&#x2715;</button>
+      <ul class="menu">
+        <li><a href="index.html"><span class="idx">01</span> Home</a></li>
+        <li><a href="itinerari.html"><span class="idx">02</span> Itinerari</a></li>
+        <li><a href="gpx.html"><span class="idx">03</span> Genera il tuo GPX</a></li>
+      </ul>
+
+    </nav>
+
+    <!-- TOP NAVIGATION BAR -->
+    <header class="sticky top-0 z-50 glass-card shadow-sm border-b border-slate-200/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <a href="#" class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-coastal-blue flex items-center justify-center text-white shadow-md">
+                    <i class="fa-solid fa-bicycle text-lg"></i>
+                </div>
+                <div>
+                    <span class="font-serif-title font-bold text-lg text-slate-900 tracking-tight block leading-none">Istria Bikepacking</span>
+                    <span class="text-xs text-slate-500 font-medium">Trieste &rarr; Rijeka • 7 Tappe • Tenda</span>
+                </div>
+            </a>
+
+            <!-- Navigation Links -->
+            <nav class="hidden md:flex items-center gap-1 bg-slate-100/80 p-1.5 rounded-full border border-slate-200 text-xs font-semibold">
+                <button onclick="switchTab('itinerary')" id="nav-itinerary" class="tab-btn px-4 py-1.5 rounded-full bg-white text-brand-700 shadow-sm transition-all">
+                    <i class="fa-solid fa-map-location-dot mr-1.5"></i>Itinerario
+                </button>
+                <button onclick="switchTab('map-view')" id="nav-map-view" class="tab-btn px-4 py-1.5 rounded-full text-slate-600 hover:text-slate-900 transition-all">
+                    <i class="fa-solid fa-route mr-1.5"></i>Mappa Reale
+                </button>
+                <button onclick="switchTab('train-info')" id="nav-train-info" class="tab-btn px-4 py-1.5 rounded-full text-slate-600 hover:text-slate-900 transition-all">
+                    <i class="fa-solid fa-train mr-1.5"></i>Rientro Treni
+                </button>
+            </nav>
+
+            <!-- Quick Actions -->
+            <div class="flex items-center gap-2">
+                <button onclick="downloadAllGpx()" class="hidden sm:inline-flex items-center gap-2 text-xs font-bold bg-brand-600 hover:bg-brand-700 text-white px-3.5 py-2 rounded-xl shadow-sm transition-all">
+                    <i class="fa-solid fa-download"></i> Tutti i GPX
+                </button>
+                <button id="offline-status-btn" onclick="toggleOfflineStatus()" class="inline-flex items-center gap-1.5 text-xs px-3 py-2 rounded-xl bg-slate-100 text-slate-700 font-semibold border border-slate-200 hover:bg-slate-200 transition-all" title="Stato Offline">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span id="offline-label" class="hidden sm:inline">Online</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Sub-bar -->
+        <div class="md:hidden flex border-t border-slate-200/80 bg-white/90 text-xs font-medium overflow-x-auto custom-scrollbar px-2 py-1.5 gap-1">
+            <button onclick="switchTab('itinerary')" id="mob-nav-itinerary" class="tab-btn-mob px-3 py-1.5 rounded-lg bg-brand-50 text-brand-700 font-bold shrink-0">
+                <i class="fa-solid fa-map-location-dot mr-1"></i>Itinerario
+            </button>
+            <button onclick="switchTab('map-view')" id="mob-nav-map-view" class="tab-btn-mob px-3 py-1.5 rounded-lg text-slate-600 shrink-0">
+                <i class="fa-solid fa-route mr-1"></i>Mappa Reale
+            </button>
+            <button onclick="switchTab('train-info')" id="mob-nav-train-info" class="tab-btn-mob px-3 py-1.5 rounded-lg text-slate-600 shrink-0">
+                <i class="fa-solid fa-train mr-1"></i>Rientro Treni
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
+
+        <!-- TAB 1: ITINERARIO E DETTAGLIO TAPPE -->
+        <section id="tab-itinerary" class="tab-content space-y-6">
+
+            <!-- HERO / BANNER SECTION (solo scheda itinerario) -->
+            <section class="gradient-hero py-8 md:py-12 border-b border-slate-200 relative overflow-hidden">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+                        <div class="max-w-2xl">
+                            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/80 border border-slate-200 text-xs font-semibold text-brand-700 mb-3 shadow-sm">
+                                <i class="fa-solid fa-compass text-brand-500"></i> Guida Cicloturismo Gravel & Bikepacking
+                            </div>
+                            <h1 class="font-serif-title text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight mb-3">
+                                Traversata dell'Istria: <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-600 via-coastal-blue to-terra-rust">Da Trieste a Fiume</span>
+                            </h1>
+                            <p class="text-slate-600 text-sm sm:text-base leading-relaxed mb-6">
+                                Sette tappe gravel tra Italia, Slovenia e Croazia. Ex ferrovia Parenzana, calette sull'Adriatico, borghi veneziani e altopiani boscosi fino al golfo del Quarnaro. Tenda, zaino e via.
+                            </p>
+
+                            <!-- Stats Badges -->
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                <div class="bg-white/80 p-3 rounded-2xl border border-slate-200/80 shadow-sm">
+                                    <span class="text-xs text-slate-500 font-medium block">Distanza Totale</span>
+                                    <span class="text-xl font-bold text-slate-900">~289 km</span>
+                                </div>
+                                <div class="bg-white/80 p-3 rounded-2xl border border-slate-200/80 shadow-sm">
+                                    <span class="text-xs text-slate-500 font-medium block">Dislivello +</span>
+                                    <span class="text-xl font-bold text-slate-900">~3.350 m</span>
+                                </div>
+                                <div class="bg-white/80 p-3 rounded-2xl border border-slate-200/80 shadow-sm">
+                                    <span class="text-xs text-slate-500 font-medium block">Pernottamento</span>
+                                    <span class="text-xl font-bold text-slate-900">Tenda & Camping</span>
+                                </div>
+                                <div class="bg-white/80 p-3 rounded-2xl border border-slate-200/80 shadow-sm">
+                                    <span class="text-xs text-slate-500 font-medium block">Profilo BRouter</span>
+                                    <span class="text-xl font-bold text-brand-600">Trekking / Gravel</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Progress & Offline Card -->
+                        <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-xl max-w-sm w-full self-center lg:self-auto">
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Progresso Viaggio</span>
+                                <span id="progress-percentage" class="text-xs font-bold text-brand-600 bg-brand-50 px-2 py-0.5 rounded-md">0 / 7 Tappe</span>
+                            </div>
+                            <div class="w-full bg-slate-100 rounded-full h-2.5 mb-4 overflow-hidden">
+                                <div id="progress-bar-fill" class="bg-gradient-to-r from-brand-500 to-coastal-blue h-2.5 rounded-full w-0 transition-all duration-500"></div>
+                            </div>
+
+                            <div class="space-y-2 mb-4 text-xs text-slate-600">
+                                <div class="flex items-center gap-2">
+                                    <i class="fa-solid fa-check-circle text-brand-500"></i>
+                                    <span>Profilo BRouter Trekking per la massima sicurezza</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <i class="fa-solid fa-check-circle text-brand-500"></i>
+                                    <span>7 Campeggi selezionati sul mare</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <i class="fa-solid fa-check-circle text-brand-500"></i>
+                                    <span>Rientro intermodale Treno Rijeka &rarr; Opicina</span>
+                                </div>
+                            </div>
+
+                            <button onclick="downloadAllGpx()" class="w-full bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold py-3 px-4 rounded-xl shadow transition-all flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-file-arrow-down text-brand-400"></i> Scarica Pacchetto GPX Completo
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                
+                <!-- Stage Sidebar Selector (4 cols) -->
+                <div class="lg:col-span-4 space-y-3">
+                    <h2 class="font-serif-title text-xl font-bold text-slate-900 px-1 flex items-center justify-between">
+                        <span>Le 7 Tappe del Viaggio</span>
+                        <span class="text-xs font-sans font-normal text-slate-500">Seleziona tappa</span>
+                    </h2>
+                    
+                    <div id="stage-sidebar-list" class="space-y-2.5">
+                        <!-- Generato dinamicamente via JS -->
+                    </div>
+                </div>
+
+                <!-- Stage Detailed Content (8 cols) -->
+                <div class="lg:col-span-8">
+                    <div id="stage-detail-container">
+                        <!-- Caricato dinamicamente via JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: MAPPA GLOBALE INTERATTIVA -->
+        <section id="tab-map-view" class="tab-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                    <div>
+                        <h2 class="font-serif-title text-2xl font-bold text-slate-900">Mappa Interattiva Reale con Tracciati GPX</h2>
+                        <p class="text-xs text-slate-500 mt-1">Caricamento diretto delle tracce reali da BRouter, dei 7 campeggi sul mare e di 17 punti storici e panoramici dell'Istria.</p>
+                    </div>
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <button onclick="fetchLiveBRouterTracks()" class="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-xl bg-brand-50 text-brand-700 border border-brand-200 hover:bg-brand-100 transition-all">
+                            <i class="fa-solid fa-arrows-rotate text-brand-600"></i> Ricarica GPX Reali
+                        </button>
+                        <span id="map-status-badge" class="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200">
+                            <i class="fa-solid fa-circle-check text-emerald-600"></i> Tracciato BRouter Attivo
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Leaflet Map Canvas -->
+                <div id="global-map" class="w-full h-[620px] rounded-2xl border border-slate-200 shadow-inner z-10"></div>
+
+                <!-- Map Legend -->
+                <div class="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                    <div class="flex items-center gap-2.5 bg-slate-50 p-3 rounded-xl border border-slate-200">
+                        <span class="w-4 h-1.5 bg-brand-600 rounded-full inline-block"></span>
+                        <span class="text-slate-700 font-semibold">Traccia Reale Stradale (BRouter GPX)</span>
+                    </div>
+                    <div class="flex items-center gap-2.5 bg-slate-50 p-3 rounded-xl border border-slate-200">
+                        <span class="w-5 h-5 rounded-full bg-amber-500 flex items-center justify-center text-[10px] text-white font-bold"><i class="fa-solid fa-tent"></i></span>
+                        <span class="text-slate-700 font-semibold">7 Campeggi Selezionati per Tenda</span>
+                    </div>
+                    <div class="flex items-center gap-2.5 bg-slate-50 p-3 rounded-xl border border-slate-200">
+                        <span class="w-5 h-5 rounded-full bg-coastal-blue flex items-center justify-center text-[10px] text-white font-bold"><i class="fa-solid fa-camera"></i></span>
+                        <span class="text-slate-700 font-semibold">Punti Storici & Panoramici</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: GUIDA COMPLETA RIENTRO IN TRENO -->
+        <section id="tab-train-info" class="tab-content hidden space-y-6">
+            <div class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-8">
+                <div>
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-200 text-xs font-semibold text-indigo-700 mb-3">
+                        <i class="fa-solid fa-train"></i> Logistica Intermodale di Rientro
+                    </div>
+                    <h2 class="font-serif-title text-2xl sm:text-3xl font-bold text-slate-900">Guida Rientro in Treno: Fiume (Rijeka) &rarr; Villa Opicina / Trieste</h2>
+                    <p class="text-xs sm:text-sm text-slate-600 mt-2 leading-relaxed">
+                        Per ritornare al punto di partenza senza percorrere a ritroso i ~290 km dell'itinerario, esiste un efficiente servizio di treno internazionale diretto gestito dalle Ferrovie Slovene (SŽ) in collaborazione con Trenitalia e le Ferrovie Croate (HŽ).
+                    </p>
+                </div>
+
+                <!-- Train Specs Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-indigo-50/50 p-4 rounded-2xl border border-indigo-100 space-y-1">
+                        <span class="text-xs text-indigo-600 font-medium block uppercase tracking-wider">Treno Navetta</span>
+                        <span class="text-xl font-bold text-slate-900">MV 1812 / 1813</span>
+                        <span class="text-xs text-slate-500 block">SŽ Stadler FLIRT (moderno)</span>
+                    </div>
+
+                    <div class="bg-indigo-50/50 p-4 rounded-2xl border border-indigo-100 space-y-1">
+                        <span class="text-xs text-indigo-600 font-medium block uppercase tracking-wider">Tratta Principale</span>
+                        <span class="text-xl font-bold text-slate-900">Rijeka &rarr; Opicina</span>
+                        <span class="text-xs text-slate-500 block">Via Ilirska Bistrica / Divača</span>
+                    </div>
+
+                    <div class="bg-indigo-50/50 p-4 rounded-2xl border border-indigo-100 space-y-1">
+                        <span class="text-xs text-indigo-600 font-medium block uppercase tracking-wider">Tempo di Percorrenza</span>
+                        <span class="text-xl font-bold text-slate-900">~2 ore e 15 min</span>
+                        <span class="text-xs text-slate-500 block">Partenza giornaliera pomeridiana (18:25)</span>
+                    </div>
+
+                    <div class="bg-indigo-50/50 p-4 rounded-2xl border border-indigo-100 space-y-1">
+                        <span class="text-xs text-indigo-600 font-medium block uppercase tracking-wider">Costo Bici + Passeggero</span>
+                        <span class="text-xl font-bold text-slate-900">~8,00€ + 5,00€</span>
+                        <span class="text-xs text-slate-500 block">Totale indicativo ~13,00€</span>
+                    </div>
+                </div>
+
+                <!-- Detailed Steps for Train Return -->
+                <div class="space-y-6 border-t border-slate-100 pt-6">
+                    <h3 class="font-serif-title text-xl font-bold text-slate-900">Procedura Passo-Passo per il Rientro</h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs">
+                        <!-- Step 1 -->
+                        <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+                            <div class="w-8 h-8 rounded-xl bg-indigo-600 text-white font-bold flex items-center justify-center text-sm">1</div>
+                            <h4 class="font-bold text-slate-900 text-sm">Acquisto Biglietti e Posto Bici</h4>
+                            <p class="text-slate-600 leading-relaxed">
+                                I biglietti per la tratta internazionale possono essere acquistati direttamente alla biglietteria della Stazione Centrale di Fiume (Rijeka Željeznički Kolodvor) oppure online sul sito delle Ferrovie Slovene (<a href="https://potniski.sz.si/en/" target="_blank" class="underline font-bold text-indigo-600">potniski.sz.si</a>). Assicurati di richiedere il supplemento per bicicletta montata.
+                            </p>
+                        </div>
+
+                        <!-- Step 2 -->
+                        <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+                            <div class="w-8 h-8 rounded-xl bg-indigo-600 text-white font-bold flex items-center justify-center text-sm">2</div>
+                            <h4 class="font-bold text-slate-900 text-sm">Imbarco alla Stazione di Fiume</h4>
+                            <p class="text-slate-600 leading-relaxed">
+                                Arriva in stazione con almeno 30 minuti di anticipo. I treni Stadler FLIRT delle Ferrovie Slovene sono a pianale ribassato, rendendo l'imbarco con bici carica ed equipaggiata di borse da bikepacking ed eventuale tenda estremamente agevole senza smontare i bagagli.
+                            </p>
+                        </div>
+
+                        <!-- Step 3 -->
+                        <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+                            <div class="w-8 h-8 rounded-xl bg-indigo-600 text-white font-bold flex items-center justify-center text-sm">3</div>
+                            <h4 class="font-bold text-slate-900 text-sm">Arrivo ad Opicina & Discesa a Trieste</h4>
+                            <p class="text-slate-600 leading-relaxed">
+                                Il treno termina la corsa alla stazione di Villa Opicina (Carso triestino). Da qui puoi scendere a Trieste Centrale affrontando 5 km di discesa panoramica asfaltata lungo la Strada Nuova per Opicina o la ciclabile della Pista Cottur.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Practical Advice Note -->
+                <div class="p-5 bg-amber-50 rounded-2xl border border-amber-200/80 text-xs text-amber-900 space-y-2">
+                    <span class="font-bold flex items-center gap-1.5 text-sm text-amber-800">
+                        <i class="fa-solid fa-triangle-exclamation"></i> Avvertenza Importante sugli Orari
+                    </span>
+                    <p class="leading-relaxed">
+                        I treni tra Fiume e Villa Opicina hanno frequenza limitata (normalmente 1 o 2 corse giornaliere). Verificare sempre gli orari aggiornati sul sito delle Ferrovie Slovene (<a href="https://potniski.sz.si/en/" target="_blank" class="underline font-bold">potniski.sz.si</a>) o Trenitalia prima di iniziare la traversata.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ============ FOOTER ============ -->
+    <footer class="site-foot">
+      <div class="wrap">
+        <p class="made">fatto con <span class="heart">♥</span> da <b>wakephul</b></p>
+        <small>© <span id="year"></span> Disagio in Sella — dati © OpenStreetMap & BRouter</small>
+      </div>
+    </footer>
+
+    <!-- JAVASCRIPT APPLICATION LOGIC -->
+    <script>
+        // Data Structure for all 7 Stages
+        const stagesData = [
+            {
+                id: 1,
+                title: "Trieste → Portorose / Lucija",
+                distance: "36 km",
+                elevation: "+350 m / -350 m",
+                surface: "40% Asfalto ciclabile • 60% Sterrato Parenzana",
+                brouterMap: "https://brouter.de/brouter-web/#map=11/45.58/13.68/standard&lonlats=13.772,45.657;13.595,45.503&profile=trekking",
+                brouterGpx: "https://brouter.de/brouter?lonlats=13.772,45.657;13.595,45.503&profile=trekking&format=gpx",
+                campingName: "Camp Lucija (Portorose / Seča, Slovenia)",
+                campingDesc: "Affacciato direttamente sulla penisola di Seča, immerso nella pineta a ridosso delle saline. Aree pianeggianti per tende, allaccio elettrico, supermercato interno, lavatrici e stazioni di lavaggio bici.",
+                campingCoords: [45.501, 13.593],
+                historyPoints: [
+                    "Piazza Unità d'Italia (Trieste): Partenza dalla più grande piazza aperta sul mare d'Europa, simbolo del passato emporiale e cosmopolita dell'Impero Austro-Ungarico.",
+                    "Val Rosandra & Pista Cottur: L'itinerario imbocca il tracciato dell'ex ferrovia Parenzana (inaugurata nel 1902 a scartamento ridotto 760 mm), scavato nei costoni calcarei del Carso.",
+                    "Capodistria (Koper) & Isola (Izola): Incontro con la dominante architettura gotico-veneziana. Palazzi nobiliari ed il Leone di San Marco ricordano secoli di dominazione della Serenissima Repubblica.",
+                    "Pirano (Piran): Città natale di Giuseppe Tartini, dominata dal campanile sul modello di San Marco a Venezia e ricca per lo storico monopolio del sale."
+                ],
+                pois: [
+                    { name: "Piazza Unità d'Italia (Trieste)", desc: "Punto di partenza iconico sul mare di fronte al Molo Audace.", coords: [45.650, 13.768] },
+                    { name: "Gallerie e Viadotti della Parenzana", desc: "Ex gallerie ferroviarie scavate nella roccia in Val Rosandra.", coords: [45.602, 13.820] },
+                    { name: "Scogliera e Riserva di Strugnano", desc: "Falesie calcaree a picco sul mare Adriatico ed uliveti.", coords: [45.526, 13.606] },
+                    { name: "Piazza Tartini & Duomo di San Giorgio (Pirano)", desc: "Piazza ellittica in marmo d'Istria e vista sulla costa veneziana.", coords: [45.528, 13.568] },
+                    { name: "Saline di Sicciole (Sečovlje)", desc: "Vasche di evaporazione tradizionali attive dal Medioevo.", coords: [45.485, 13.612] }
+                ],
+                food: "Branzino fresco della Baia di Pirano (allevamenti ecologici Fonda), abbinato a un calice di Malvazija Istriana minerale.",
+                tips: "Fontanelle d'acqua sulla Pista Cottur e nei centri di Capodistria ed Isola. Officine bici ben fornite a Capodistria.",
+                fallbackCoords: [
+                    [45.657, 13.772], [45.632, 13.785], [45.615, 13.805], [45.602, 13.820], 
+                    [45.590, 13.800], [45.578, 13.788], [45.558, 13.750], [45.548, 13.730], 
+                    [45.538, 13.659], [45.530, 13.630], [45.526, 13.606], [45.528, 13.568], 
+                    [45.512, 13.580], [45.503, 13.595]
+                ]
+            },
+            {
+                id: 2,
+                title: "Portorose → Cittanova / Novigrad",
+                distance: "38 km",
+                elevation: "+400 m / -400 m",
+                surface: "50% Gravel di campagna • 35% Asfalto secondario • 15% Macadam",
+                brouterMap: "https://brouter.de/brouter-web/#map=11/45.41/13.58/standard&lonlats=13.595,45.503;13.568,45.310&profile=trekking",
+                brouterGpx: "https://brouter.de/brouter?lonlats=13.595,45.503;13.568,45.310&profile=trekking&format=gpx",
+                campingName: "Camping Aminess Sirena (Cittanova / Novigrad, Croazia)",
+                campingDesc: "A 800m dal centro di Novigrad, sotto una pineta secolare a ridosso delle calette. Struttura ad alta vocazione bike-friendly con piazzole su erba, stazione lavaggio bici e piscina.",
+                campingCoords: [45.312, 13.571],
+                historyPoints: [
+                    "Fiume Dragogna & Saline di Sicciole: Confine naturale e storico dove si estraeva il sale bianco, monopolio strategico per la Repubblica di Venezia.",
+                    "Faro di Salvore (Savudrija): Il faro attivo più antico dell'Adriatico (1818), eretto sotto l'Impero Austriaco con la sua caratteristica architettura in pietra.",
+                    "Buje (Buie) e la Terra Rossa (Crvena Istra): Borgo medievale fortificato ribattezzato 'la sentinella dell'Istria', famoso per i suoli ferrosi ideali per la vite.",
+                    "Novigrad (Cittanova): Antico insediamento romano ed insulare munito di imponenti mura di cinta perimetrali di epoca veneziana (XV secolo)."
+                ],
+                pois: [
+                    { name: "Faro di Salvore (Savudrija)", desc: "Faro austro-ungarico del 1818 e tradizionali grua in legno dei pescatori.", coords: [45.488, 13.488] },
+                    { name: "Borgo Fortificato di Buie", desc: "Roccaforte sulle colline con vista a 360° sulla Terra Rossa.", coords: [45.408, 13.660] },
+                    { name: "Oasi dell'Estuario del Mirna (Quieto)", desc: "Riserva naturalistica alla foce del fiume Mirna.", coords: [45.335, 13.585] },
+                    { name: "Mura Veneziane di Novigrad", desc: "Cinta muraria medievale ben conservata direttamente a sbalzo sul mare.", coords: [45.315, 13.562] }
+                ],
+                food: "Supa Istriana (vino Teran caldo con zucchero, olio d'oliva e pane tostato nella boccale 'bukaleta') e frutti di mare.",
+                tips: "Documenti pronti per il confine tra Slovenia e Croazia. Pietrisco affilato dopo Sečovlje: calibrare la pressione delle coperture.",
+                fallbackCoords: [
+                    [45.503, 13.595], [45.485, 13.612], [45.480, 13.550], [45.488, 13.488],
+                    [45.450, 13.510], [45.435, 13.520], [45.408, 13.660], [45.380, 13.626],
+                    [45.350, 13.600], [45.335, 13.585], [45.310, 13.568]
+                ]
+            },
+            {
+                id: 3,
+                title: "Cittanova → Parenzo / Poreč",
+                distance: "28 km",
+                elevation: "+250 m / -250 m",
+                surface: "65% Ciclabile & Sterrato scorrevole • 35% Asfalto secondario",
+                brouterMap: "https://brouter.de/brouter-web/#map=12/45.26/13.58/standard&lonlats=13.568,45.310;13.592,45.202&profile=trekking",
+                brouterGpx: "https://brouter.de/brouter?lonlats=13.568,45.310;13.592,45.202&profile=trekking&format=gpx",
+                campingName: "Camping Zelena Laguna (Parenzo / Poreč, Croazia)",
+                campingDesc: "A 5 km a sud di Parenzo, un grande campeggio immerso nel verde tra insenature e macchia mediterranea. Ombra naturale, piazzole tende eccellenti e pista ciclabile dedicata verso il centro.",
+                campingCoords: [45.198, 13.591],
+                historyPoints: [
+                    "Valle del Mirna e Rotta del Legname: Snodo dove i pini ed i querci dell'entroterra venivano fluitati per la costruzione dei pali di fondazione di Venezia.",
+                    "Červar Porat: Antico complesso industriale romano per la produzione di olio d'oliva ed anfore vinarie di epoca imperiale.",
+                    "Parenzo (Castrum Parentium): Impianto urbanistico romano intatto con il Cardo e Decumano Massimo.",
+                    "Basilica Eufrasiana (Patrimonio UNESCO): Complesso paleocristiano del VI secolo con mosaici dorati bizantini tra i meglio conservati al mondo."
+                ],
+                pois: [
+                    { name: "Baia di Červar Porat", desc: "Sito archeologico con resti dei frantoi e fornaci romane.", coords: [45.260, 13.570] },
+                    { name: "Mosaici della Basilica Eufrasiana", desc: "Capolavoro dell'arte bizantina del VI secolo.", coords: [45.228, 13.593] },
+                    { name: "Torre Pentagonale e Rotonda di Parenzo", desc: "Fortificazioni veneziane del XV secolo nel centro storico.", coords: [45.225, 13.594] },
+                    { name: "Promontorio di Zelena Laguna", desc: "Scogliera e calette ombreggiate dai pini marittimi.", coords: [45.198, 13.591] }
+                ],
+                food: "Maneštra (minestrone tradizionale con mais o lardo battuto) e orata alla griglia condita con olio extravergine locale.",
+                tips: "Tappa breve e pianeggiante ideale per riposare. Punti assistenza meccanica e ricambi disponibili nel centro di Parenzo.",
+                fallbackCoords: [
+                    [45.310, 13.568], [45.290, 13.560], [45.275, 13.555], [45.260, 13.570],
+                    [45.245, 13.580], [45.227, 13.593], [45.210, 13.590], [45.202, 13.592]
+                ]
+            },
+            {
+                id: 4,
+                title: "Parenzo → Rovigno / Rovinj",
+                distance: "42 km",
+                elevation: "+450 m / -450 m",
+                surface: "55% Sterrato forestale • 35% Asfalto secondario • 10% Macadam",
+                brouterMap: "https://brouter.de/brouter-web/#map=11/45.14/13.62/standard&lonlats=13.592,45.202;13.635,45.093&profile=trekking",
+                brouterGpx: "https://brouter.de/brouter?lonlats=13.592,45.202;13.635,45.093&profile=trekking&format=gpx",
+                campingName: "Camping Porton Biondi (Rovigno / Rovinj, Croazia)",
+                campingDesc: "Terrazzato sotto i pini con vista diretta da cartolina sulla città vecchia di Rovigno e sulla cattedrale. Piazzole ben livellate, prese di ricarica e accesso alla spiaggia.",
+                campingCoords: [45.093, 13.635],
+                historyPoints: [
+                    "Vrsar (Orsera) & Cave di Pietra d'Istria: Borgo storico famoso per le sue cave da cui si estraeva il calcare compatto per i palazzi e viadotti di Venezia.",
+                    "Canale di Leme (Limski Kanal): Rilievo geomorfologico unico, un fiordo di 10 km scavato nei rilievi calcarei, confine storico tra i territori romani di Parenzo e Pola.",
+                    "Rovigno (Rovinj): Borgo arroccato su un promontorio roccioso che era originariamente un'isola, unito alla terraferma nel 1763.",
+                    "Tradizione Marittima delle Batane: Le tipiche imbarcazioni in legno a fondo piatto usate dai pescatori rovignesi (patrimonio intangibile UNESCO)."
+                ],
+                pois: [
+                    { name: "Borgo e Vista di Vrsar (Orsera)", desc: "Punto panoramico frequentato storicamente anche da Giacomo Casanova.", coords: [45.150, 13.605] },
+                    { name: "Belvedere sul Fiordo di Leme", desc: "Vista aerea sulla spaccatura naturale ricoperta di macchia mediterranea.", coords: [45.132, 13.670] },
+                    { name: "Cattedrale di Sant'Eufemia (Rovigno)", desc: "Duomo barocco in cima alla rocca con la statua segnavento in rame.", coords: [45.083, 13.631] },
+                    { name: "Parco Forestale Punta Corrente (Zlatni Rt)", desc: "Viali storici di cedri e pini marittimi a picco sulle baie.", coords: [45.068, 13.645] }
+                ],
+                food: "Ostriche e cozze fresche coltivate nelle acque del Canale di Leme, oppure Fuži (pasta fresca) al tartufo nero.",
+                tips: "La risalita dal Canale di Leme presenta pendenze fino all'8-10%. Fare scorta d'acqua prima di iniziare la salita.",
+                fallbackCoords: [
+                    [45.202, 13.592], [45.180, 13.600], [45.150, 13.605], [45.138, 13.630],
+                    [45.132, 13.670], [45.128, 13.720], [45.110, 13.700], [45.102, 13.680],
+                    [45.093, 13.635]
+                ]
+            },
+            {
+                id: 5,
+                title: "Rovigno → Pola / Pula",
+                distance: "40 km",
+                elevation: "+350 m / -350 m",
+                surface: "60% Sterrato costiero e viottoli • 40% Asfalto secondario",
+                brouterMap: "https://brouter.de/brouter-web/#map=11/44.97/13.73/standard&lonlats=13.635,45.093;13.821,44.857&profile=trekking",
+                brouterGpx: "https://brouter.de/brouter?lonlats=13.635,45.093;13.821,44.857&profile=trekking&format=gpx",
+                campingName: "Arena Stoja Camping (Pola / Pula, Croazia)",
+                campingDesc: "Ubicato sull'intera penisola di Stoja a 3 km dal centro di Pola. Completamente circondato dal mare con scogliere calcaree. Piazzole tende panoramiche, stazioni lavaggio bici e supermarket.",
+                campingCoords: [44.857, 13.821],
+                historyPoints: [
+                    "Bale (Valle): Affascinante borgo medievale arroccato edificato su un antico castelliere romano lungo la Via Flavia.",
+                    "Fortificazioni di Barbariga: Sistema di batterie costiere austro-ungariche costruite tra fine '800 e primo '900 a difesa della principale base navale imperiale.",
+                    "Fasana (Fažana) & Isole Brioni: Punto di partenza per l'arcipelago delle Brioni, residenza imperiale romana prima ed estiva del Presidente Tito nel '900.",
+                    "Pola (Pula): La metropoli romana dell'Istria, famosa per l'Arena (I sec. d.C.), il Tempio di Augusto ed il Giardino degli Olivi secolari."
+                ],
+                pois: [
+                    { name: "Castello Soardo-Bimbi a Valle (Bale)", desc: "Fortezza e vicoli lastricati in pietra bianca.", coords: [45.041, 13.785] },
+                    { name: "Fort Forno & Batteria Barbariga", desc: "Imponente fortezza militare austro-ungarica sulla costa.", coords: [44.992, 13.735] },
+                    { name: "Lungomare di Fasana con vista su Brioni", desc: "Porticciolo storico affacciato sul Parco Nazionale delle Brijuni.", coords: [44.928, 13.803] },
+                    { name: "Arena Romana di Pola", desc: "Uno dei 6 anfiteatri romani meglio conservati al mondo.", coords: [44.873, 13.845] }
+                ],
+                food: "Carne di Boškarin (bue grigio autoctono istriano) con gnocchi, oppure Ćevapi con salsa Ajvar e pane Somun.",
+                tips: "Tratto sterrato con rocce affioranti tra Barbariga e Fasana. Prestare attenzione ai fianchi dei copertoni.",
+                fallbackCoords: [
+                    [45.093, 13.635], [45.068, 13.645], [45.052, 13.682], [45.041, 13.785],
+                    [45.010, 13.760], [44.992, 13.735], [44.952, 13.798], [44.928, 13.803],
+                    [44.890, 13.820], [44.873, 13.845], [44.857, 13.821]
+                ]
+            },
+            {
+                id: 6,
+                title: "Pola → Rabac / Albona (Labin)",
+                distance: "53 km",
+                elevation: "+750 m / -750 m",
+                surface: "60% Asfalto panoramico • 40% Sterrato di campagna/bosco",
+                brouterMap: "https://brouter.de/brouter-web/#map=11/44.97/13.98/standard&lonlats=13.821,44.857;14.155,45.078&profile=trekking",
+                brouterGpx: "https://brouter.de/brouter?lonlats=13.821,44.857;14.155,45.078&profile=trekking&format=gpx",
+                campingName: "Camping Oliva (Rabac / Labin, Croazia)",
+                campingDesc: "Sito nella baia di Maslinica a Rabac, immerso in un uliveto secolare a ridosso della spiaggia di ciottoli. Ampie piazzole per tende, piscine, lavanderia e servizi per ciclisti.",
+                campingCoords: [45.078, 14.155],
+                historyPoints: [
+                    "Valle dell'Arsa (Raša): Il fiume Arsa segnava il confine geografico tra la Regio X Venetia et Histria e la Liburnia d'epoca romana.",
+                    "Albona (Labin): Borgo fortificato veneziano a 320m di altitudine con la Porta Sanfior e le logge rinascimentali.",
+                    "Repubblica di Albona (1921): La prima insurrezione mineraria ed antifascista d'Europa promossa dai minatori del bacino d'estrazione dell'antracite a Podlabin."
+                ],
+                pois: [
+                    { name: "Piana e Canyon del Fiume Arsa (Raša)", desc: "Insenatura naturale tra le colline dell'Istria orientale.", coords: [45.082, 14.048] },
+                    { name: "Centro Storico di Labin (Albona)", desc: "Palazzi in stile gotico-veneziano e vista sul Quarnaro.", coords: [45.092, 14.122] },
+                    { name: "Torre d'Estrazione Mineraria di Podlabin", desc: "Patrimonio di archeologia industriale mineraria.", coords: [45.085, 14.118] },
+                    { name: "Baia di Maslinica (Rabac)", desc: "Insenatura naturale dai ciottoli bianchi ricoperta da uliveti.", coords: [45.078, 14.155] }
+                ],
+                food: "Labinski Krafi (ravioli dolci-salati con formaggio e uvetta serviti con goulash) e grappa Biska.",
+                tips: "Tappa con maggior dislivello dell'itinerario. Dosare le energie lungo la salita per Labin e fare rifornimento d'acqua.",
+                fallbackCoords: [
+                    [44.857, 13.821], [44.885, 13.860], [44.912, 13.935], [44.955, 13.958],
+                    [45.010, 13.980], [45.062, 14.015], [45.082, 14.048], [45.085, 14.118],
+                    [45.092, 14.122], [45.078, 14.155]
+                ]
+            },
+            {
+                id: 7,
+                title: "Rabac → Abbazia / Fiume (Rijeka)",
+                distance: "52 km",
+                elevation: "+800 m / -800 m",
+                surface: "70% Asfalto panoramico • 30% Sterrato collinare/gravel",
+                brouterMap: "https://brouter.de/brouter-web/#map=11/45.20/14.28/standard&lonlats=14.155,45.078;14.348,45.348;14.433,45.332&profile=trekking",
+                brouterGpx: "https://brouter.de/brouter?lonlats=14.155,45.078;14.348,45.348;14.433,45.332&profile=trekking&format=gpx",
+                campingName: "Autocamp Preluk (Abbazia / Fiume, Croazia)",
+                campingDesc: "Nella baia di Preluk tra Abbazia e Rijeka, celebre per la brezza marina. Piazzole tende ombreggiate direttamente sul mare, spiaggia di ciottoli e fermata bus/pista vicina.",
+                campingCoords: [45.352, 14.342],
+                historyPoints: [
+                    "Fiordo di Plomin (Fianona): Antico insediamento romano e porta d'accesso alle scogliere del Monte Učka (Monte Maggiore).",
+                    "Riviera di Opatija (Abbazia): Il salotto aristocratico dell'Impero Asburgico nato nel 1844 con Villa Angiolina, frequentato da nobili e scienziati da tutta Europa.",
+                    "Fiume (Rijeka): Storico porto franco dell'Impero Austro-Ungarico. Traguardo finale alla Stazione Centrale con il Castello di Tersatto (Trsat) a guardia della foce del Rječina."
+                ],
+                pois: [
+                    { name: "Terrazza Vidikovac di Plomin", desc: "Punto panoramico a picco sul fiordo e sull'Isola di Cres.", coords: [45.142, 14.182] },
+                    { name: "Villa Angiolina & Parco Botanico (Opatija)", desc: "Architettura Belle Époque e giardini esotici sul mare.", coords: [45.335, 14.305] },
+                    { name: "Castello di Tersatto (Trsat)", desc: "Fortezza medievale che domina l'intera baia del Quarnaro.", coords: [45.332, 14.448] },
+                    { name: "Stazione Centrale di Fiume (Rijeka)", desc: "Punto finale del viaggio e partenza del treno navetta diretto.", coords: [45.332, 14.433] }
+                ],
+                food: "Scampi del Quarnaro alla Busara ed un calice di Vrbnička Žlahtina dell'isola di Veglia.",
+                tips: "Tratto costiero trafficato nei mesi estivi presso Opatija. Si raccomanda l'uso di luci posteriori ad alta visibilità.",
+                fallbackCoords: [
+                    [45.078, 14.155], [45.100, 14.160], [45.142, 14.182], [45.180, 14.220],
+                    [45.238, 14.252], [45.292, 14.275], [45.335, 14.305], [45.348, 14.348],
+                    [45.352, 14.342], [45.332, 14.433]
+                ]
+            }
+        ];
+
+        // State variables
+        let currentStageId = 1;
+        let completedStages = [];
+        let userNotes = {};
+        let leafletMap = null;
+        let stagePolylines = {};
+
+        // Load state from LocalStorage
+        function loadState() {
+            try {
+                const storedCompleted = localStorage.getItem('istria_completed_stages');
+                if (storedCompleted) completedStages = JSON.parse(storedCompleted);
+                const storedNotes = localStorage.getItem('istria_user_notes');
+                if (storedNotes) userNotes = JSON.parse(storedNotes);
+            } catch (e) {
+                console.error("Local Storage Error:", e);
+            }
+        }
+
+        function renderSidebar() {
+            const listContainer = document.getElementById('stage-sidebar-list');
+            if (!listContainer) return;
+
+            listContainer.innerHTML = stagesData.map(stage => {
+                const isSelected = stage.id === currentStageId;
+                const isDone = completedStages.includes(stage.id);
+
+                return `
+                    <button onclick="selectStage(${stage.id})" class="w-full text-left p-3.5 rounded-2xl border transition-all flex items-center justify-between ${
+                        isSelected 
+                            ? 'bg-brand-600 text-white border-brand-600 shadow-md ring-2 ring-brand-300' 
+                            : 'bg-white text-slate-800 border-slate-200 hover:bg-slate-50'
+                    }">
+                        <div class="space-y-0.5 pr-2">
+                            <div class="flex items-center gap-2">
+                                <span class="text-[10px] uppercase font-extrabold tracking-wider ${isSelected ? 'text-brand-100' : 'text-brand-700'}">Tappa ${stage.id}</span>
+                                ${isDone ? `<span class="text-[10px] px-1.5 py-0.2 rounded-full ${isSelected ? 'bg-white/20 text-white' : 'bg-emerald-100 text-emerald-800'} font-bold"><i class="fa-solid fa-check"></i> Fatta</span>` : ''}
+                            </div>
+                            <span class="font-bold text-xs block leading-snug ${isSelected ? 'text-white' : 'text-slate-900'}">${stage.title}</span>
+                            <span class="text-[11px] block ${isSelected ? 'text-brand-100' : 'text-slate-500'}">${stage.distance} • ${stage.elevation}</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-xs ${isSelected ? 'text-white' : 'text-slate-300'}"></i>
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function renderStageDetail(stageId) {
+            const data = stagesData.find(s => s.id === stageId);
+            if (!data) return;
+
+            const container = document.getElementById('stage-detail-container');
+            if (!container) return;
+
+            const isCompleted = completedStages.includes(stageId);
+
+            container.innerHTML = `
+                <div class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
+                    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-100 pb-6">
+                        <div>
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="px-3 py-1 rounded-full bg-brand-100 text-brand-800 text-xs font-extrabold uppercase">Tappa ${data.id} di 7</span>
+                                ${isCompleted ? '<span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold"><i class="fa-solid fa-check mr-1"></i>Completata</span>' : ''}
+                            </div>
+                            <h2 class="font-serif-title text-2xl sm:text-3xl font-bold text-slate-900">${data.title}</h2>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="flex flex-wrap items-center gap-2">
+                            <button onclick="toggleStageCompleted(${data.id})" class="text-xs font-bold px-4 py-2.5 rounded-xl border transition-all ${isCompleted ? 'bg-emerald-600 text-white border-emerald-600 hover:bg-emerald-700' : 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200'}">
+                                <i class="fa-solid ${isCompleted ? 'fa-check-double' : 'fa-circle-check'} mr-1.5"></i>
+                                ${isCompleted ? 'Segna come Non Fatta' : 'Segna come Completata'}
+                            </button>
+                            <a href="${data.brouterGpx}" target="_blank" download class="text-xs font-bold bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl shadow-sm transition-all flex items-center gap-1.5">
+                                <i class="fa-solid fa-download"></i> Scarica GPX
+                            </a>
+                            <a href="${data.brouterMap}" target="_blank" class="text-xs font-bold bg-slate-900 hover:bg-slate-800 text-white px-4 py-2.5 rounded-xl shadow-sm transition-all flex items-center gap-1.5">
+                                <i class="fa-solid fa-arrow-up-right-from-square"></i> BRouter Web
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Technical Specs Bar -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-200/80">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-brand-600 font-bold shrink-0">
+                                <i class="fa-solid fa-route"></i>
+                            </div>
+                            <div>
+                                <span class="text-xs text-slate-400 font-medium block">Distanza</span>
+                                <span class="text-base font-bold text-slate-900">${data.distance}</span>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-terra-rust font-bold shrink-0">
+                                <i class="fa-solid fa-mountain"></i>
+                            </div>
+                            <div>
+                                <span class="text-xs text-slate-400 font-medium block">Dislivello</span>
+                                <span class="text-base font-bold text-slate-900">${data.elevation}</span>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-3 sm:col-span-1">
+                            <div class="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-coastal-blue font-bold shrink-0">
+                                <i class="fa-solid fa-layer-group"></i>
+                            </div>
+                            <div>
+                                <span class="text-xs text-slate-400 font-medium block">Fondo Stradale</span>
+                                <span class="text-xs font-bold text-slate-800">${data.surface}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2 Columns Grid Content -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 pt-2">
+                        <!-- Left Column: History Points & POIs -->
+                        <div class="space-y-6">
+                            <!-- Historical Context Bullet Points -->
+                            <div class="bg-amber-50/60 p-6 rounded-2xl border border-amber-200/60 space-y-4">
+                                <h3 class="font-serif-title text-lg font-bold text-slate-900 flex items-center gap-2">
+                                    <i class="fa-solid fa-landmark text-amber-700"></i> Contesto Storico e Culturale
+                                </h3>
+                                <ul class="space-y-2.5 text-xs text-slate-700">
+                                    ${data.historyPoints.map(pt => `
+                                        <li class="flex items-start gap-2.5">
+                                            <i class="fa-solid fa-angle-right text-amber-600 mt-0.5 shrink-0"></i>
+                                            <span class="leading-relaxed font-medium">${pt}</span>
+                                        </li>
+                                    `).join('')}
+                                </ul>
+                            </div>
+
+                            <!-- Interactive POI List for this Stage -->
+                            <div class="bg-white p-6 rounded-2xl border border-slate-200 space-y-4">
+                                <h3 class="font-serif-title text-lg font-bold text-slate-900 flex items-center gap-2">
+                                    <i class="fa-solid fa-camera text-brand-600"></i> Punti Panoramici e Storici
+                                </h3>
+                                <div class="space-y-3 text-xs">
+                                    ${data.pois.map(poi => `
+                                        <div class="p-3.5 rounded-xl border bg-slate-50 border-slate-200 flex items-start gap-3">
+                                            <div class="w-7 h-7 rounded-lg bg-coastal-blue/10 text-coastal-blue flex items-center justify-center font-bold shrink-0 mt-0.5">
+                                                <i class="fa-solid fa-location-dot"></i>
+                                            </div>
+                                            <div>
+                                                <span class="font-bold text-slate-900 block">${poi.name}</span>
+                                                <span class="text-slate-600 block mt-0.5">${poi.desc}</span>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Camping, Food, Tips & Personal Journal -->
+                        <div class="space-y-6">
+                            <!-- Camping Card -->
+                            <div class="bg-brand-50/50 p-6 rounded-2xl border border-brand-200/80 space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <h3 class="font-serif-title text-lg font-bold text-slate-900 flex items-center gap-2">
+                                        <i class="fa-solid fa-tent text-brand-600"></i> Dove Pernottare in Tenda
+                                    </h3>
+                                    <span class="text-[10px] font-bold uppercase tracking-wider bg-brand-100 text-brand-800 px-2.5 py-0.5 rounded-md">Sul Mare</span>
+                                </div>
+                                <span class="font-bold text-sm text-brand-900 block">${data.campingName}</span>
+                                <p class="text-xs text-slate-600 leading-relaxed">
+                                    ${data.campingDesc}
+                                </p>
+                            </div>
+
+                            <!-- Gastronomy & Practical Tips -->
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div class="p-5 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
+                                    <h4 class="font-bold text-xs uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+                                        <i class="fa-solid fa-utensils text-terra-rust"></i> Enogastronomia
+                                    </h4>
+                                    <p class="text-xs text-slate-700 leading-relaxed font-medium">
+                                        ${data.food}
+                                    </p>
+                                </div>
+
+                                <div class="p-5 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
+                                    <h4 class="font-bold text-xs uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+                                        <i class="fa-solid fa-wrench text-coastal-blue"></i> Consigli Pratici
+                                    </h4>
+                                    <p class="text-xs text-slate-700 leading-relaxed">
+                                        ${data.tips}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Personal Journal Note -->
+                            <div class="bg-white p-6 rounded-2xl border border-slate-200 space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <h3 class="font-serif-title text-base font-bold text-slate-900 flex items-center gap-2">
+                                        <i class="fa-solid fa-pen-to-square text-brand-600"></i> Diario & Note Personali
+                                    </h3>
+                                    <span class="text-[10px] text-slate-400">Salvataggio automatico</span>
+                                </div>
+                                <textarea id="stage-note-${data.id}" oninput="saveStageNote(${data.id})" rows="3" placeholder="Aggiungi appunti su orari, spese, impressioni o contatti..." class="w-full text-xs p-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all">${userNotes[data.id] || ''}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function selectStage(stageId) {
+            currentStageId = stageId;
+            renderSidebar();
+            renderStageDetail(stageId);
+        }
+
+        function toggleStageCompleted(stageId) {
+            const index = completedStages.indexOf(stageId);
+            if (index > -1) {
+                completedStages.splice(index, 1);
+            } else {
+                completedStages.push(stageId);
+            }
+            try {
+                localStorage.setItem('istria_completed_stages', JSON.stringify(completedStages));
+            } catch (e) {}
+
+            renderSidebar();
+            renderStageDetail(stageId);
+            updateProgressBar();
+        }
+
+        function saveStageNote(stageId) {
+            const textarea = document.getElementById(`stage-note-${stageId}`);
+            if (!textarea) return;
+            userNotes[stageId] = textarea.value;
+            try {
+                localStorage.setItem('istria_user_notes', JSON.stringify(userNotes));
+            } catch (e) {}
+        }
+
+        function updateProgressBar() {
+            const count = completedStages.length;
+            const percent = Math.round((count / 7) * 100);
+            
+            const badge = document.getElementById('progress-percentage');
+            const fill = document.getElementById('progress-bar-fill');
+            
+            if (badge) badge.textContent = `${count} / 7 Tappe`;
+            if (fill) fill.style.width = `${percent}%`;
+        }
+
+        function switchTab(tabId) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            
+            // Remove active style from desktop tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-white', 'text-brand-700', 'shadow-sm');
+                btn.classList.add('text-slate-600');
+            });
+
+            // Remove active style from mobile tab buttons
+            document.querySelectorAll('.tab-btn-mob').forEach(btn => {
+                btn.classList.remove('bg-brand-50', 'text-brand-700', 'font-bold');
+                btn.classList.add('text-slate-600');
+            });
+
+            // Show selected tab container
+            const targetContainer = document.getElementById(`tab-${tabId}`);
+            if (targetContainer) targetContainer.classList.remove('hidden');
+
+            // Set active desktop button
+            const activeNavBtn = document.getElementById(`nav-${tabId}`);
+            if (activeNavBtn) {
+                activeNavBtn.classList.add('bg-white', 'text-brand-700', 'shadow-sm');
+                activeNavBtn.classList.remove('text-slate-600');
+            }
+
+            // Set active mobile button
+            const activeMobBtn = document.getElementById(`mob-nav-${tabId}`);
+            if (activeMobBtn) {
+                activeMobBtn.classList.add('bg-brand-50', 'text-brand-700', 'font-bold');
+                activeMobBtn.classList.remove('text-slate-600');
+            }
+
+            // If switching to map, trigger Leaflet resize recalculation
+            if (tabId === 'map-view') {
+                if (!leafletMap) {
+                    initGlobalMap();
+                } else {
+                    setTimeout(() => {
+                        leafletMap.invalidateSize();
+                    }, 150);
+                }
+            }
+        }
+
+        function initGlobalMap() {
+            if (leafletMap) return;
+
+            // Initialize Leaflet map centered over Istria
+            leafletMap = L.map('global-map').setView([45.18, 13.88], 9);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 18,
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(leafletMap);
+
+            const allBounds = [];
+            const stageColors = ['#e8643c', '#93a06a', '#e6b035', '#d44d24', '#6d7a4a', '#c49020', '#b83d18'];
+
+            stagesData.forEach((s, idx) => {
+                const color = stageColors[idx % stageColors.length];
+                
+                // Initial fallback smooth line while live GPX loads
+                const polyline = L.polyline(s.fallbackCoords, {
+                    color: color,
+                    weight: 5,
+                    opacity: 0.85,
+                    lineCap: 'round',
+                    lineJoin: 'round'
+                }).addTo(leafletMap);
+
+                polyline.bindPopup(`
+                    <div class="text-xs p-1">
+                        <span class="font-bold text-slate-900 block text-sm">${s.title}</span>
+                        <span class="text-brand-600 font-semibold block">${s.distance} • ${s.elevation}</span>
+                    </div>
+                `);
+
+                stagePolylines[s.id] = polyline;
+                s.fallbackCoords.forEach(c => allBounds.push(c));
+                if (s.campingCoords) allBounds.push(s.campingCoords);
+
+                // Marker for Sea-side Campsite
+                const campIcon = L.divIcon({
+                    className: 'custom-map-icon',
+                    html: `<div style="background-color: #e6b035; color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 8px rgba(0,0,0,0.3); border: 2px solid white;"><i class="fa-solid fa-tent" style="font-size: 12px;"></i></div>`,
+                    iconSize: [28, 28],
+                    iconAnchor: [14, 14]
+                });
+
+                L.marker(s.campingCoords, { icon: campIcon }).addTo(leafletMap)
+                    .bindPopup(`
+                        <div class="text-xs p-1">
+                            <span class="font-bold text-amber-800 block text-sm"><i class="fa-solid fa-tent mr-1"></i>${s.campingName}</span>
+                            <span class="text-slate-600 block mt-1">${s.campingDesc}</span>
+                        </div>
+                    `);
+
+                // Markers for Stage POIs
+                s.pois.forEach(poi => {
+                    const poiIcon = L.divIcon({
+                        className: 'custom-map-icon',
+                        html: `<div style="background-color: #93a06a; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(0,0,0,0.25); border: 2px solid white;"><i class="fa-solid fa-camera" style="font-size: 10px;"></i></div>`,
+                        iconSize: [24, 24],
+                        iconAnchor: [12, 12]
+                    });
+
+                    L.marker(poi.coords, { icon: poiIcon }).addTo(leafletMap)
+                        .bindPopup(`
+                            <div class="text-xs p-1">
+                                <span class="font-bold text-slate-900 block text-sm"><i class="fa-solid fa-camera text-coastal-blue mr-1"></i>${poi.name}</span>
+                                <span class="text-slate-600 block mt-1">${poi.desc}</span>
+                                <span class="text-brand-600 font-bold block mt-1">Tappa ${s.id}</span>
+                            </div>
+                        `);
+                });
+            });
+
+            if (allBounds.length > 0) {
+                leafletMap.fitBounds(allBounds, { padding: [25, 25] });
+            }
+
+            // Dynamically load real GPX tracks from BRouter
+            fetchLiveBRouterTracks();
+        }
+
+        async function fetchLiveBRouterTracks() {
+            const badge = document.getElementById('map-status-badge');
+            if (badge) {
+                badge.className = "inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-xl bg-amber-50 text-amber-800 border border-amber-200 animate-pulse";
+                badge.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-amber-600"></i> Caricamento tracciato reale da BRouter...';
+            }
+
+            let loadedCount = 0;
+
+            for (const s of stagesData) {
+                try {
+                    // Extract lonlats query from stage brouter url
+                    const urlObj = new URL(s.brouterGpx);
+                    const lonlats = urlObj.searchParams.get('lonlats');
+                    const geoJsonUrl = `https://brouter.de/brouter?lonlats=${lonlats}&profile=trekking&format=geojson`;
+
+                    const response = await fetch(geoJsonUrl);
+                    if (response.ok) {
+                        const geojsonData = await response.json();
+                        if (geojsonData && geojsonData.features && geojsonData.features[0]) {
+                            const rawCoordinates = geojsonData.features[0].geometry.coordinates;
+                            // Convert [lon, lat] to Leaflet [lat, lon]
+                            const latLngs = rawCoordinates.map(coord => [coord[1], coord[0]]);
+
+                            if (stagePolylines[s.id] && leafletMap) {
+                                stagePolylines[s.id].setLatLngs(latLngs);
+                                loadedCount++;
+                            }
+                        }
+                    }
+                } catch (err) {
+                    console.log(`Fallback attivo per tappa ${s.id}: ${err.message}`);
+                }
+            }
+
+            if (badge) {
+                if (loadedCount > 0) {
+                    badge.className = "inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200";
+                    badge.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600"></i> ${loadedCount}/7 Tracce Reali BRouter Caricate`;
+                } else {
+                    badge.className = "inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 border border-slate-200";
+                    badge.innerHTML = '<i class="fa-solid fa-map text-slate-500"></i> Tracciato Sfumato Ottimizzato';
+                }
+            }
+        }
+
+        function downloadAllGpx() {
+            stagesData.forEach(s => {
+                window.open(s.brouterGpx, '_blank');
+            });
+        }
+
+        function toggleOfflineStatus() {
+            const btn = document.getElementById('offline-status-btn');
+            const label = document.getElementById('offline-label');
+            
+            if (btn && btn.classList.contains('bg-slate-100')) {
+                btn.classList.remove('bg-slate-100', 'text-slate-700');
+                btn.classList.add('bg-emerald-100', 'text-emerald-800', 'border-emerald-300');
+                if (label) label.textContent = "Offline Salvato";
+            } else if (btn) {
+                btn.classList.remove('bg-emerald-100', 'text-emerald-800', 'border-emerald-300');
+                btn.classList.add('bg-slate-100', 'text-slate-700');
+                if (label) label.textContent = "Online";
+            }
+        }
+
+        window.onload = function() {
+            loadState();
+            renderSidebar();
+            renderStageDetail(1);
+            updateProgressBar();
+        };
+    </script>
+    <script src="js/main.js"></script>
+</body>
+</html>
