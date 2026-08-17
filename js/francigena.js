@@ -33,6 +33,14 @@ const VF_TAPPE = [
 /* ---------- shared accommodations load ---------- */
 const accReady = fetch('data/accommodations.json').then(r => r.json()).then(j => j.places).catch(() => []);
 
+/* ---------- shared city autocomplete (datalist) ---------- */
+accReady.then(places => {
+  const dl = document.getElementById('vf-cities');
+  if (!dl) return;
+  const cities = [...new Set(places.map(p => p.city))].sort((a, b) => a.localeCompare(b, 'it'));
+  dl.innerHTML = cities.map(c => `<option value="${c}">`).join('');
+});
+
 /* ---------- 2 · ACCOMMODATIONS FINDER ---------- */
 accReady.then(places => {
   const grid = document.getElementById('acc-grid');
